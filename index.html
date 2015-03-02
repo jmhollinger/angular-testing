@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en" ng-app="statuslex">
+<head>
+  <meta charset="utf-8">
+  <title>Angular Testing</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/custom.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.12/angular.min.js"></script>
+  <script src="js/statuslex.js"></script>
+</head>
+<body>
+<div class="container-fluid" ng-controller="PermitDetailCtrl">
+	<div ng-repeat="x in DetailData">
+	    <h1>{{x.Address}}</h1>
+	    <ul class="list-group">
+		    <li class="list-group-item">Date: {{x.Date | date:'shortDate'}}</li>
+		    <li class="list-group-item">Address: {{x.Address | lowercase}}</li>
+        <li class="list-group-item">Permit Type: {{x.PermitType | lowercase}}</li>
+        <li class="list-group-item">Construction Cost: {{x.ConstructionCost | currency}}</li>
+	    </ul>
+  	</div>
+</div>
+</body>
+</html>
