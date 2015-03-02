@@ -1,0 +1,20 @@
+    <div id="record" ng-repeat="x in DetailData">
+    	 <h1 class="title">{{x.CleanAddress | titlecase}}</h1>
+       <h3>Building Permit</h3>
+    	   <ul class="details-ul">
+    		   <li><strong>Permit ID:</strong> {{x.ID}}</li>
+           <li><strong>Date:</strong> {{x.Date | date:'shortDate'}}</li>
+    		   <li><strong>Address:</strong> {{x.Address | titlecase}}</li>
+           <li><strong>Permit Type:</strong> {{x.PermitType | titlecase}}</li>
+           <li><strong>Construction Cost:</strong> {{x.ConstructionCost | currency}}</li>
+           <li><strong>Owner:</strong> {{x.OwnerName | titlecase}}</li>
+           <li><strong>Contractor:</strong> {{x.Contractor | titlecase}}</li>
+    	   </ul>
+    </div>
+
+    <div id="meta">
+      <h3>About the Data</h3>
+      <p>Permits are issued by the Division of Building Inspection and the Division of Planning for a variety of activities including construction and certification of compliance with zoning. The permit information above is submitted by the applicant.</p>
+      <p>If you have questions or concerns about permits, please contact the the Division of Building Inspection at (859) 425-2255.</p>
+      <p>Addresses and map locations are approximate. No warranties, expressed or implied, are provided with this information.</p>
+    </div>
