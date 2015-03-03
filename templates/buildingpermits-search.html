@@ -23,7 +23,7 @@
     </div>
 
     <div class="col-sm-12"> 
-    <table class="table">
+    <table class="table table-hover table-striped">
           <thead>
            <th>Date</th>
            <th>Address</th>
@@ -32,13 +32,13 @@
            <th>Owner Name</th>
            <th>Contractor</th>
        </thead>
-       <tr ng-repeat="x in SearchData" >
-           <td><a ng-href="#/bldg-permits/{{x._id}}">{{x.Date | date:'shortDate'}}<a></td>
-           <td><a ng-href="#/bldg-permits/{{x._id}}">{{x.Address | titlecase}}<a></td>
-           <td><a ng-href="#/bldg-permits/{{x._id}}">{{x.PermitType | titlecase}}<a></td>
-           <td><a ng-href="#/bldg-permits/{{x._id}}">{{x.ConstructionCost | currency}}<a></td>
-           <td><a ng-href="#/bldg-permits/{{x._id}}">{{x.OwnerName | titlecase}}<a></td>
-           <td><a ng-href="#/bldg-permits/{{x._id}}">{{x.Contractor | titlecase}}<a></td>
+       <tr ng-repeat="x in SearchData">
+           <td><a ng-href="#bldg-permits/{{x._id}}">{{x.Date | date:'shortDate'}}</a></td>
+           <td>{{x.Address | titlecase}}</td>
+           <td>{{x.PermitType | titlecase}}</td>
+           <td>{{x.ConstructionCost | currency}}</td>
+           <td>{{x.OwnerName | titlecase}}</td>
+           <td>{{x.Contractor | titlecase}}</td>
        </tr>
     </table>
   </div>

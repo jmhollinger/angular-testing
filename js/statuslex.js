@@ -38,6 +38,7 @@ statuslex.config(['$routeProvider',
       otherwise({
         templateUrl: 'templates/home.html'
       });
+
   }]);
 
 
@@ -49,7 +50,7 @@ slControllers.controller('PermitDetailCtrl', ['$scope', '$http', '$routeParams',
   function ($scope, $http, $routeParams) {
   var DataURL = 'http://www.civicdata.com/api/action/datastore_search_sql?sql=SELECT * FROM "2691aff1-e555-48d3-9188-aebf1fa8323e" WHERE "_id"  =' + $routeParams.param
     $http.get(DataURL).success(function(data) {
-      $scope.DetailData = data.result.records;
+    $scope.DetailData = data.result.records;
     });
 }]);
 
