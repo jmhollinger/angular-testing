@@ -25,12 +25,18 @@ padding-top: 80px;
   bottom: 0;
   width: 100%;
   height: 60px;
-  background-color: #f5f5f5;
+  background-color: #ffffff;
+  color: #555;
+}
+
+.footer a{
+  color: #555;
 }
 
 .title {
   font-weight: 700;
-  margin-top:0px;
+  margin-top: 0px;
+  color: #E74C3C;
 
 }
 
@@ -43,6 +49,30 @@ padding-top: 80px;
       line-height: 1.4em;
 }
 
+.tiles {
+  color: #ffffff;
+  font-size: 2em;
+  text-align: center;
+  background-color: #3498DB;
+  border: 15px solid #ffffff;
+  height: 275px;
+  border-radius: 25px;
+}
+
+.tiles i{
+  font-size: 5em;
+}
+
+.tiles a:link, a:visited{
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.tiles a:hover, a:focus{
+  color: #2C3E50;
+  text-decoration: none;
+}
+
 /*navbar*/
 
 .navbar-statuslex {
@@ -50,7 +80,7 @@ padding-top: 80px;
 }
 .navbar-statuslex .navbar-brand {
   color: #ECF0F1;
-  font-size: 3em;
+  font-size: 2.5em;
   font-weight: 700;
   margin: 10px 0px;
 }
