@@ -26,9 +26,7 @@
 	<tr ng-repeat="x in SearchData">
 		<td>
 			<a ng-href="#bldg-permits/{{x._id}}">
-			{{x.Date | date:'shortDate'}}<br>
-	        {{x.Address | titlecase}}<br>
-	        {{x.PermitType | titlecase}}
+			{{x.Date | date:'shortDate'}} - {{x.Address | titlecase}} - {{x.PermitType | titlecase}}
 	        </a>
 		</td>
 	</tr>
