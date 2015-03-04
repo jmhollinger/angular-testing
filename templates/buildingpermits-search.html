@@ -21,23 +21,34 @@
       </form>
   </div>
 
-  <div class="col-sm-12 table-responsive"> 
-    <table class="table table-hover table-striped">
+  <div class="col-sm-12">
+	<table class="table table-striped visible-xs-block">
+	<tr ng-repeat="x in SearchData">
+		<td>
+			<a ng-href="#bldg-permits/{{x._id}}">
+			{{x.Date | date:'shortDate'}}<br>
+	        {{x.Address | titlecase}}<br>
+	        {{x.PermitType | titlecase}}
+	        </a>
+		</td>
+	</tr>
+	</table>   
+    <table class="table table-striped hidden-xs">
           <thead>
            <th>Date</th>
            <th>Address</th>
-           <th class="hidden-xs">Permit Type</th>
-           <th class="hidden-xs">Construction Cost</th>
-           <th class="hidden-xs">Owner Name</th>
-           <th class="hidden-xs">Contractor</th>
+           <th>Permit Type</th>
+           <th>Construction Cost</th>
+           <th>Owner Name</th>
+           <th>Contractor</th>
        </thead>
        <tr ng-repeat="x in SearchData">
            <td><a ng-href="#bldg-permits/{{x._id}}">{{x.Date | date:'shortDate'}}</a></td>
            <td>{{x.Address | titlecase}}</td>
-           <td class="hidden-xs">{{x.PermitType | titlecase}}</td>
-           <td class="hidden-xs">{{x.ConstructionCost | currency}}</td>
-           <td class="hidden-xs">{{x.OwnerName | titlecase}}</td>
-           <td class="hidden-xs">{{x.Contractor | titlecase}}</td>
+           <td>{{x.PermitType | titlecase}}</td>
+           <td>{{x.ConstructionCost | currency}}</td>
+           <td>{{x.OwnerName | titlecase}}</td>
+           <td>{{x.Contractor | titlecase}}</td>
        </tr>
     </table>
     <p class="text-center">View more of the {{RecordCount | number}} building permits that your search returned.</p>
