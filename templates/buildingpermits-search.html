@@ -8,7 +8,7 @@
           <option >Date - Newest to Oldest </option>
           <option>Date - Oldest to Newest</option>
           <option>Address - A to Z</option>
-          <option>Address - Z to Z</option>
+          <option>Address - Z to A</option>
           <option>Permit Type - A to Z</option>
           <option>Permit Type - Z to A</option>
           <option>Construction Cost - Highest to Lowest</option>
@@ -26,19 +26,19 @@
           <thead>
            <th>Date</th>
            <th>Address</th>
-           <th>Permit Type</th>
-           <th>Construction Cost</th>
-           <th>Owner Name</th>
-           <th>Contractor</th>
+           <th class="hidden-xs">Permit Type</th>
+           <th class="hidden-xs">Construction Cost</th>
+           <th class="hidden-xs">Owner Name</th>
+           <th class="hidden-xs">Contractor</th>
        </thead>
        <tr ng-repeat="x in SearchData">
            <td><a ng-href="#bldg-permits/{{x._id}}">{{x.Date | date:'shortDate'}}</a></td>
            <td>{{x.Address | titlecase}}</td>
-           <td>{{x.PermitType | titlecase}}</td>
-           <td>{{x.ConstructionCost | currency}}</td>
-           <td>{{x.OwnerName | titlecase}}</td>
-           <td>{{x.Contractor | titlecase}}</td>
+           <td class="hidden-xs">{{x.PermitType | titlecase}}</td>
+           <td class="hidden-xs">{{x.ConstructionCost | currency}}</td>
+           <td class="hidden-xs">{{x.OwnerName | titlecase}}</td>
+           <td class="hidden-xs">{{x.Contractor | titlecase}}</td>
        </tr>
     </table>
-    <p class="center-block btn btn-default">View more of the {{RecordCount | number}} building permits that your search returned.</p>
+    <p class="text-center">View more of the {{RecordCount | number}} building permits that your search returned.</p>
   </div>
