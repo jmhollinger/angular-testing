@@ -2,7 +2,7 @@
 
 
 /* Main StatusLex App Module */
-var statuslex = angular.module('statuslex', [  'ngRoute', 'slControllers', 'slServices']);
+var statuslex = angular.module('statuslex', [  'ngRoute', 'slControllers', 'slServices', 'uiGmapgoogle-maps']);
 
 /* Controllers Module */
 var slControllers = angular.module('slControllers', []);
@@ -74,7 +74,12 @@ slControllers.controller('PermitDetailCtrl', ['$scope', '$http', '$routeParams',
   var DataURL = 'http://www.civicdata.com/api/action/datastore_search_sql?sql=SELECT * FROM "2691aff1-e555-48d3-9188-aebf1fa8323e" WHERE "_id"  =' + $routeParams.param
     $http.get(DataURL).success(function(data) {
     $scope.DetailData = data.result.records;
-    });
+    var lng = data.result.records[0].lat
+    var lat = data.result.records[0].lng
+    $scope.map = { center: { latitude: lat, longitude: lng }, zoom: 17 };
+    $scope.marker = { id: 0, coords: { latitude: lat, longitude: lng }}
+    $scope.infowindow = {show: true}
+   });
     $scope.RecordType = 'Building Permit'
     $scope.Meta = 'Permits are issued by the Division of Building Inspection and the Division of Planning for a variety of activities including construction and certification of compliance with zoning. The permit information above is submitted by the applicant.'
     $scope.Contact = 'If you have questions or concerns about permits, please contact the the Division of Building Inspection at (859) 425-2255.'
@@ -86,6 +91,11 @@ slControllers.controller('CodeDetailCtrl', ['$scope', '$http','$routeParams',
   var DataURL = 'http://www.civicdata.com/api/action/datastore_search_sql?sql=SELECT * FROM "ad346da7-ce88-4c77-a0e1-10ff09bb0622" WHERE "_id"  =' + $routeParams.param
     $http.get(DataURL).success(function(data) {
     $scope.DetailData = data.result.records;
+    var lng = data.result.records[0].lat
+    var lat = data.result.records[0].lng
+    $scope.map = { center: { latitude: lat, longitude: lng }, zoom: 17 };
+    $scope.marker = { id: 0, coords: { latitude: lat, longitude: lng }}
+    $scope.infowindow = {show: true}
     });
     $scope.RecordType = 'Code Enforcement Case'
     $scope.Meta = 'Code enforcement cases are opened based on citizen complaints for violations of nuisance code, the International Property Maintenance Code, and sidewalk regulations.'

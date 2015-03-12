@@ -1,5 +1,5 @@
-    <div class="col-sm-12">
-    <div id="record" ng-repeat="x in DetailData">
+    <div class="row" ng-repeat="x in DetailData">
+      <div class="col-sm-4">
     	 <h1 class="title">{{x.CleanAddress | titlecase}}</h1>
        <h3>{{RecordType | titlecase}}</h3>
     	   <ul class="details-ul">
@@ -12,10 +12,25 @@
            <li><strong>Contractor:</strong> {{x.Contractor | titlecase}}</li>
     	   </ul>
     </div>
-    <div id="meta">
+    <div class="col-sm-8">
+     <ui-gmap-google-map center="map.center" zoom="map.zoom">
+      <ui-gmap-marker coords="marker.coords" idkey="marker.id">
+            <ui-gmap-window show = "infowindow.show">
+                <div>
+                  <p class="bold">{{x.CleanAddress | titlecase}}<p/>
+                  <p> {{x.Date | date:'shortDate'}} - {{x.PermitType | titlecase}}</p>
+                </div>
+            </ui-gmap-window>
+      </ui-gmap-marker>
+     </ui-gmap-google-map>
+    </div>
+  </div>
+
+<div class="com-sm-12">
+  <div id="meta">
       <h3>About the Data</h3>
       <p>{{Meta}}</p>
       <p>{{Contact}}</p>
       <p>Addresses and map locations are approximate. No warranties, expressed or implied, are provided with this information.</p>
     </div>
-  </div> 
+</div>
