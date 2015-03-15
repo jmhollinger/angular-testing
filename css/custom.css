@@ -40,7 +40,7 @@ font-weight: bold;
 .title {
   font-weight: 700;
   margin-top: 0px;
-  color: #E74C3C;
+  color: #1ABC9C;
 
 }
 
@@ -64,7 +64,7 @@ font-weight: bold;
 }
 
 .tiles i{
-  font-size: 5em;
+  font-size: 4em;
 }
 
 .tiles a:link, a:visited{
