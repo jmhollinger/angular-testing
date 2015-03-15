@@ -4,7 +4,10 @@
 	<table class="table table-striped visible-xs-block">
 	<tr ng-repeat="x in SearchData">
 		<td>
-			<a ng-href="#code-cases/{{x._id}}">{{x.DateOpened | date:'shortDate'}} - {{x.Address | titlecase}} - {{x.CaseType | titlecase}}</a>
+			<a ng-href="#code-cases/{{x._id}}">
+			<span class="bold">{{x.CleanAddress | titlecase}}</span><br/>
+			{{x.DateOpened | date:'shortDate'}}<br/>
+			{{x.CaseType | titlecase}} Case</a>
 		</td>
 	</tr>
 	</table>   
