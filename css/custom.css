@@ -59,7 +59,7 @@ font-weight: bold;
   text-align: center;
   background-color: #3498DB;
   border: 15px solid #ffffff;
-  height: 275px;
+  min-height: 210px;
   border-radius: 25px;
 }
 
