@@ -1,0 +1,30 @@
+  <div class="col-sm-12">
+  </div>
+  <div class="col-sm-12">
+	<table class="table table-striped visible-xs-block">
+	<tr ng-repeat="x in SearchData">
+		<td>
+			<a ng-href="#row-permits/{{x._id}}">{{x.IssueDate | date:'shortDate'}} - {{x.Address | titlecase}} - {{x.PermitType | titlecase}}</a>
+		</td>
+	</tr>
+	</table>   
+    <table class="table table-striped hidden-xs">
+          <thead>
+           <th>Date Issued</th>
+           <th>Address</th>
+           <th>Entity Performing Work</th>
+           <th>Permit Type</th>
+           <th>Type of Work</th>
+           <th>Lane Blockage</th>
+       </thead>
+       <tr ng-repeat="x in SearchData">
+           <td><a ng-href="#row-permits/{{x._id}}">{{x.IssueDate | date:'shortDate'}}</a></td>
+           <td><a ng-href="#row-permits/{{x._id}}">{{x.Address | titlecase}}</a></td>
+           <td><a ng-href="#row-permits/{{x._id}}">{{x.Name | titlecase}}</a></td>
+           <td><a ng-href="#row-permits/{{x._id}}">{{x.PermitType | titlecase}}</a></td>
+           <td><a ng-href="#row-permits/{{x._id}}">{{x.TypeOfWork | titlecase}}</a></td>
+           <td><a ng-href="#row-permits/{{x._id}}">{{x.LaneBlockage | titlecase}}</a></td>
+       </tr>
+    </table>
+    <p class="text-center">There are {{RecordCount | number}} right-of-way permits in this dataset.</p>
+  </div>

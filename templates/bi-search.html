@@ -1,0 +1,30 @@
+  <div class="col-sm-12">
+  </div>
+  <div class="col-sm-12">
+	<table class="table table-striped visible-xs-block">
+	<tr ng-repeat="x in SearchData">
+		<td>
+			<a ng-href="#bldg-permits/{{x._id}}">{{x.Date | date:'shortDate'}} - {{x.Address | titlecase}} - {{x.PermitType | titlecase}}</a>
+		</td>
+	</tr>
+	</table>   
+    <table class="table table-striped hidden-xs">
+          <thead>
+           <th>Date</th>
+           <th>Address</th>
+           <th>Permit Type</th>
+           <th>Construction Cost</th>
+           <th>Owner Name</th>
+           <th>Contractor</th>
+       </thead>
+       <tr ng-repeat="x in SearchData">
+           <td><a ng-href="#bldg-permits/{{x._id}}">{{x.Date | date:'shortDate'}}</a></td>
+           <td><a ng-href="#bldg-permits/{{x._id}}">{{x.Address | titlecase}}</a></td>
+           <td><a ng-href="#bldg-permits/{{x._id}}">{{x.PermitType | titlecase}}</a></td>
+           <td><a ng-href="#bldg-permits/{{x._id}}">{{x.ConstructionCost | currency}}</a></td>
+           <td><a ng-href="#bldg-permits/{{x._id}}">{{x.OwnerName | titlecase}}</a></td>
+           <td><a ng-href="#bldg-permits/{{x._id}}">{{x.Contractor | titlecase}}</a></td>
+       </tr>
+    </table>
+    <p class="text-center">There are {{RecordCount | number}} building permits in this dataset.</p>
+  </div>

@@ -3,13 +3,14 @@
     	 <h1 class="title">{{x.CleanAddress | titlecase}}</h1>
        <h3>{{RecordType | titlecase}}</h3>
     	   <ul class="details-ul">
-    		   <li><strong>Permit ID:</strong> {{x.ID}}</li>
-           <li><strong>Date:</strong> {{x.Date | date:'shortDate'}}</li>
+    		   <li><strong>Permit ID:</strong> {{x.PermitNo}}</li>
+           <li><strong>Date Issued:</strong> {{x.SubmitDate | date:'shortDate'}}</li>
     		   <li><strong>Address:</strong> {{x.Address | titlecase}}</li>
+           <li><strong>Entity Performing Work:</strong> {{x.Name | titlecase}}</li>
            <li><strong>Permit Type:</strong> {{x.PermitType | titlecase}}</li>
-           <li><strong>Construction Cost:</strong> {{x.ConstructionCost | currency}}</li>
-           <li><strong>Owner:</strong> {{x.OwnerName | titlecase}}</li>
-           <li><strong>Contractor:</strong> {{x.Contractor | titlecase}}</li>
+           <li><strong>Type of Work:</strong> {{x.TypeOfWork | titlecase}}</li>
+           <li><strong>Anticpated Work Dates:</strong> {{x.StartDate | date:'shortDate'}} - {{x.CompleteDate | date:'shortDate'}}</li>
+           <li><strong>Lane Blockage:</strong> {{x.LaneBlockage | titlecase}}</li>
     	   </ul>
     </div>
     <div class="col-sm-8">
@@ -22,7 +23,6 @@
      </ui-gmap-google-map>
     </div>
   </div>
-
 <div class="com-sm-12">
   <div id="meta">
       <h3>About the Data</h3>

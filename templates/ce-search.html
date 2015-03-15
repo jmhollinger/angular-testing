@@ -1,0 +1,28 @@
+  <div class="col-sm-12">
+  </div>
+  <div class="col-sm-12">
+	<table class="table table-striped visible-xs-block">
+	<tr ng-repeat="x in SearchData">
+		<td>
+			<a ng-href="#code-cases/{{x._id}}">{{x.DateOpened | date:'shortDate'}} - {{x.Address | titlecase}} - {{x.CaseType | titlecase}}</a>
+		</td>
+	</tr>
+	</table>   
+    <table class="table table-striped hidden-xs">
+          <thead>
+           <th>Date Opened</th>
+           <th>Address</th>
+           <th>Case Type</th>
+           <th>Status</th>
+           <th>Status Date</th>
+       </thead>
+       <tr ng-repeat="x in SearchData">
+           <td><a ng-href="#code-cases/{{x._id}}">{{x.DateOpened | date:'shortDate'}}</a></td>
+           <td><a ng-href="#code-cases/{{x._id}}">{{x.Address | titlecase}}</a></td>
+           <td><a ng-href="#code-cases/{{x._id}}">{{x.CaseType | titlecase}}</a></td>
+           <td><a ng-href="#code-cases/{{x._id}}">{{x.Status | titlecase}}</a></td>
+           <td><a ng-href="#code-cases/{{x._id}}">{{x.StatusDate | date:'shortDate'}}</a></td>
+       </tr>
+    </table>
+    <p class="text-center">There are {{RecordCount | number}} code cases in this dataset.</p>
+  </div>
