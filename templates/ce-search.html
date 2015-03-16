@@ -1,7 +1,4 @@
-  <div class="col-sm-12">
-  </div>
-  <div class="col-sm-12">
-	<table class="table table-striped visible-xs-block">
+<table class="table table-striped visible-xs-block">
 	<tr ng-repeat="x in SearchData">
 		<td>
 			<a ng-href="#code-cases/{{x._id}}">
@@ -11,8 +8,8 @@
 		</td>
 	</tr>
 	</table>   
-    <table class="table table-striped hidden-xs">
-          <thead>
+  <table class="table table-striped hidden-xs">
+        <thead>
            <th>Date Opened</th>
            <th>Address</th>
            <th>Case Type</th>
@@ -28,4 +25,3 @@
        </tr>
     </table>
     <p class="text-center">There are {{RecordCount | number}} code cases in this dataset.</p>
-  </div>
