@@ -2,7 +2,7 @@
 
 
 /* Main StatusLex App Module */
-var statuslex = angular.module('statuslex', [  'ngRoute', 'slControllers', 'slServices', 'uiGmapgoogle-maps']);
+var statuslex = angular.module('statuslex', [ 'ngRoute', 'slControllers', 'slServices', 'uiGmapgoogle-maps', 'ui.grid']);
 
 /* Controllers Module */
 var slControllers = angular.module('slControllers', []);
@@ -53,7 +53,6 @@ statuslex.config(['$routeProvider',
 
   }]);
 
-
 /*--------------Controllers--------------*/
 var bi_resource = '2691aff1-e555-48d3-9188-aebf1fa8323e'
 var ce_resource = 'ad346da7-ce88-4c77-a0e1-10ff09bb0622'
@@ -62,13 +61,29 @@ var row_resource = 'f64d48f2-3d01-499e-b182-7793eb7bff7c'
 /* Bulding Permit Search */
 slControllers.controller('PermitSearchCtrl', ['$scope', '$http',
   function ($scope, $http) {
-  var DataURL = 'http://www.civicdata.com/api/action/datastore_search_sql?sql=SELECT * FROM "' + bi_resource + '" ORDER BY "Date" DESC, "_id" DESC LIMIT 100'
+  var DataURL = 'http://www.civicdata.com/api/action/datastore_search_sql?sql=SELECT * FROM "' + bi_resource + '" ORDER BY "Date" DESC, "_id" DESC LIMIT 500'
   var CountURL = 'http://www.civicdata.com/api/action/datastore_search_sql?sql=SELECT COUNT(*) FROM "' + bi_resource + '"'
-    $http.get(DataURL).success(function(data) {
-    $scope.SearchData = data.result.records;
+  
+  $scope.gridOptions = {};
+  
+  $scope.gridOptions = {
+  showGridFooter: true, 
+  columnDefs:  
+  [{field:'ID', displayName: 'Permit ID', width: '*'},
+  {field: 'Date', displayName: 'Date', cellFilter: 'date:\'shortDate\'', width: '*'},
+  {field: 'Address', displayName: 'Address', cellFilter: 'titlecase', width: '*'},
+  {field: 'PermitType', displayName: 'Permit Type', cellFilter: 'titlecase', width: '*'},
+  {field: 'ConstructionCost', displayName: 'Construction Cost', cellFilter: 'currency', width: '*'},
+  {field: 'OwnerName', displayName: 'Owner', cellFilter: 'titlecase', width: '*'},
+  {field: 'Contractor', displayName: 'Contractor', cellFilter: 'titlecase', width: '*'}]
+};
+
+  $http.get(DataURL).success(function(data) {
+  $scope.gridOptions.data = data.result.records;
     });
-    $http.get(CountURL).success(function(data) {
-    $scope.RecordCount = data.result.records[0].count;
+
+  $http.get(CountURL).success(function(data) {
+  $scope.RecordCount = data.result.records[0].count;
     });
 }]);
 

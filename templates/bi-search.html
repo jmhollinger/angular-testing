@@ -1,5 +1,7 @@
-	<table class="table table-striped visible-xs-block">
-	<tr ng-repeat="x in SearchData">
+	<div ui-grid="gridOptions" class="grid"></div>
+
+  <!--<table id="bi-search" class="table table-striped visible-xs-block">
+  <tr ng-repeat="x in SearchData">
 		<td>
 			<a ng-href="#bldg-permits/{{x._id}}">
 			<span class="bold">{{x.CleanAddress | titlecase}}</span><br/>
@@ -26,4 +28,5 @@
            <td><a ng-href="#bldg-permits/{{x._id}}">{{x.Contractor | titlecase}}</a></td>
        </tr>
     </table>
-    <p class="text-center">There are {{RecordCount | number}} building permits in this dataset.</p>
+    <p class="text-center">There are {{RecordCount | number}} building permits in this dataset.</p><--!>
+
