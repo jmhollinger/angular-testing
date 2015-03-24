@@ -1,27 +1,43 @@
-<table class="table table-striped visible-xs-block">
-	<tr ng-repeat="x in SearchData">
-		<td>
-			<a ng-href="#code-cases/{{x._id}}">
-			<span class="bold">{{x.CleanAddress | titlecase}}</span><br/>
-			{{x.DateOpened | date:'shortDate'}}<br/>
-			{{x.CaseType | titlecase}} Case</a>
-		</td>
-	</tr>
-	</table>   
-  <table class="table table-striped hidden-xs">
-        <thead>
-           <th>Date Opened</th>
-           <th>Address</th>
-           <th>Case Type</th>
-           <th>Status</th>
-           <th>Status Date</th>
+<table st-table="displayedCollection" st-safe-src="rowCollection" class="table table-striped hidden-xs">
+       <thead>
+           <tr>
+              <th colspan="5"><input st-search placeholder="Search" class="input-md form-control" type="search"></th>
+           </tr>
+           <tr>
+             <th st-sort="DateOpened" class="sortable">Date Opened</th>
+             <th st-sort="getters.Address" class="sortable">Address</th>
+             <th st-sort="CaseType" class="sortable">Case Type</th>
+             <th st-sort="Status" class="sortable">Status</th>
+             <th st-sort="StatusDate" class="sortable">Status Date</th>
+           </tr>
        </thead>
-       <tr ng-repeat="x in SearchData">
+       <tbody>
+       <tr ng-repeat="x in displayedCollection">
            <td><a ng-href="#code-cases/{{x._id}}">{{x.DateOpened | date:'shortDate'}}</a></td>
            <td><a ng-href="#code-cases/{{x._id}}">{{x.Address | titlecase}}</a></td>
            <td><a ng-href="#code-cases/{{x._id}}">{{x.CaseType | titlecase}}</a></td>
            <td><a ng-href="#code-cases/{{x._id}}">{{x.Status | titlecase}}</a></td>
            <td><a ng-href="#code-cases/{{x._id}}">{{x.StatusDate | date:'shortDate'}}</a></td>
        </tr>
-    </table>
-    <p class="text-center">There are {{RecordCount | number}} code cases in this dataset.</p>
+       </tbody>
+</table>
+
+<table st-table="displayedCollection" st-safe-src="rowCollection" class="table table-striped visible-xs-block">
+      <thead>
+        <tr>
+         <th><input st-search placeholder="Search" class="input-md form-control" type="search"></th>
+        </tr>
+      </thead>
+      <tbody>
+      <tr ng-repeat="x in displayedCollection">
+        <td>
+          <a ng-href="#code-cases/{{x._id}}">
+          <span class="bold">{{x.CleanAddress | titlecase}}</span><br/>
+          {{x.DateOpened | date:'shortDate'}}<br/>
+          {{x.CaseType | titlecase}} Case</a>
+        </td>
+      </tr>
+    </tbody>
+</table>
+    
+<p class="text-center">Your search returned {{RecordCount | number}} records.</p>

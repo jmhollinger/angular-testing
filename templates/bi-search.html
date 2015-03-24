@@ -1,25 +1,19 @@
-	<div ui-grid="gridOptions" class="grid"></div>
-
-  <!--<table id="bi-search" class="table table-striped visible-xs-block">
-  <tr ng-repeat="x in SearchData">
-		<td>
-			<a ng-href="#bldg-permits/{{x._id}}">
-			<span class="bold">{{x.CleanAddress | titlecase}}</span><br/>
-			{{x.Date | date:'shortDate'}}<br/>
-			{{x.PermitType | titlecase}}</a>
-		</td>
-	</tr>
-	</table>   
-    <table class="table table-striped hidden-xs">
-          <thead>
-           <th>Date</th>
-           <th>Address</th>
-           <th>Permit Type</th>
-           <th>Construction Cost</th>
-           <th>Owner Name</th>
-           <th>Contractor</th>
+<table st-table="displayedCollection" st-safe-src="rowCollection" class="table table-striped hidden-xs">
+       <thead>
+           <tr>
+              <th colspan="6"><input st-search placeholder="Search" class="input-md form-control" type="search"></th>
+           </tr>
+           <tr>
+             <th st-sort="Date" class="sortable">Date</th>
+             <th st-sort="getters.Address" class="sortable">Address</th>
+             <th st-sort="PermitType" class="sortable">Permit Type</th>
+             <th st-sort="getters.ConstructionCost" class="sortable">Const. Cost</th>
+             <th st-sort="OwnerName" class="sortable">Owner</th>
+             <th st-sort="Contractor" class="sortable">Contractor</th>
+           </tr>
        </thead>
-       <tr ng-repeat="x in SearchData">
+       <tbody>
+       <tr ng-repeat="x in displayedCollection">
            <td><a ng-href="#bldg-permits/{{x._id}}">{{x.Date | date:'shortDate'}}</a></td>
            <td><a ng-href="#bldg-permits/{{x._id}}">{{x.Address | titlecase}}</a></td>
            <td><a ng-href="#bldg-permits/{{x._id}}">{{x.PermitType | titlecase}}</a></td>
@@ -27,6 +21,26 @@
            <td><a ng-href="#bldg-permits/{{x._id}}">{{x.OwnerName | titlecase}}</a></td>
            <td><a ng-href="#bldg-permits/{{x._id}}">{{x.Contractor | titlecase}}</a></td>
        </tr>
-    </table>
-    <p class="text-center">There are {{RecordCount | number}} building permits in this dataset.</p><--!>
+       </tbody>
+</table>
+
+<table st-table="displayedCollection" st-safe-src="rowCollection" class="table table-striped visible-xs-block">
+      <thead>
+        <tr>
+         <th><input st-search placeholder="Search" class="input-md form-control" type="search"></th>
+        </tr>
+      </thead>
+      <tbody>
+      <tr ng-repeat="x in displayedCollection">
+        <td>
+          <a ng-href="#code-cases/{{x._id}}">
+          <span class="bold">{{x.CleanAddress | titlecase}}</span><br/>
+          {{x.Date | date:'shortDate'}}<br/>
+          {{x.PermitType | titlecase}}</a>
+        </td>
+      </tr>
+    </tbody>
+</table>
+    
+<p class="text-center">Your search returned {{RecordCount | number}} records.</p>
 
