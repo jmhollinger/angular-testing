@@ -61,7 +61,7 @@ var row_resource = 'f64d48f2-3d01-499e-b182-7793eb7bff7c'
 /* Bulding Permit Search */
 slControllers.controller('PermitSearchCtrl', ['$scope', '$http','$filter',
   function ($scope, $http, $filter) {
-  var DataURL = 'http://www.civicdata.com/api/action/datastore_search_sql?sql=SELECT * FROM "' + bi_resource + '" ORDER BY "Date" DESC, "_id" DESC LIMIT 300'
+  var DataURL = 'http://www.civicdata.com/api/action/datastore_search_sql?sql=SELECT * FROM "' + bi_resource + '" ORDER BY "Date" DESC, "_id" DESC LIMIT 500'
   var CountURL = 'http://www.civicdata.com/api/action/datastore_search_sql?sql=SELECT COUNT(*) FROM "' + bi_resource + '"'
   
   $http.get(DataURL).success(function(data) {
@@ -81,7 +81,7 @@ slControllers.controller('PermitSearchCtrl', ['$scope', '$http','$filter',
 /* Code Cases Search */
 slControllers.controller('CodeSearchCtrl', ['$scope', '$http',
   function ($scope, $http) {
-  var DataURL = 'http://www.civicdata.com/api/action/datastore_search_sql?sql=SELECT * FROM "' + ce_resource + '" ORDER BY "DateOpened" DESC, "_id" DESC LIMIT 300'
+  var DataURL = 'http://www.civicdata.com/api/action/datastore_search_sql?sql=SELECT * FROM "' + ce_resource + '" ORDER BY "DateOpened" DESC, "_id" DESC LIMIT 500'
   var CountURL = 'http://www.civicdata.com/api/action/datastore_search_sql?sql=SELECT COUNT(*) FROM "' + ce_resource + '"'
   
   $http.get(DataURL).success(function(data) {
@@ -100,7 +100,7 @@ slControllers.controller('CodeSearchCtrl', ['$scope', '$http',
 /* ROW Permit Search */
 slControllers.controller('ROWSearchCtrl', ['$scope', '$http',
   function ($scope, $http) {
-  var DataURL = 'http://www.civicdata.com/api/action/datastore_search_sql?sql=SELECT * FROM "' + row_resource + '" ORDER BY "IssueDate" DESC, "_id" DESC LIMIT 300'
+  var DataURL = 'http://www.civicdata.com/api/action/datastore_search_sql?sql=SELECT * FROM "' + row_resource + '" ORDER BY "IssueDate" DESC, "_id" DESC LIMIT 500'
   var CountURL = 'http://www.civicdata.com/api/action/datastore_search_sql?sql=SELECT COUNT(*) FROM "' + row_resource + '"'
     
   $http.get(DataURL).success(function(data) {
