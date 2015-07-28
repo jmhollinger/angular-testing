@@ -2,7 +2,7 @@
 
 
 /* Main StatusLex App Module */
-var statuslex = angular.module('statuslex', [ 'ngRoute', 'slControllers', 'slServices', 'uiGmapgoogle-maps', 'smart-table']);
+var statuslex = angular.module('statuslex', [ 'ngRoute', 'slControllers', 'slServices', 'uiGmapgoogle-maps', 'smart-table', 'ui.grid', 'ui.grid.resizeColumns']);
 
 /* Controllers Module */
 var slControllers = angular.module('slControllers', []);
@@ -61,21 +61,26 @@ var row_resource = 'f64d48f2-3d01-499e-b182-7793eb7bff7c'
 /* Bulding Permit Search */
 slControllers.controller('PermitSearchCtrl', ['$scope', '$http','$filter',
   function ($scope, $http, $filter) {
-  var DataURL = 'http://www.civicdata.com/api/action/datastore_search_sql?sql=SELECT * FROM "' + bi_resource + '" ORDER BY "Date" DESC, "_id" DESC LIMIT 500'
-  var CountURL = 'http://www.civicdata.com/api/action/datastore_search_sql?sql=SELECT COUNT(*) FROM "' + bi_resource + '"'
+  
+  var fields = '"Date", "Address", "PermitType", "ConstructionCost", "OwnerName", "Contractor"'
+  var DataURL = 'http://www.civicdata.com/api/action/datastore_search_sql?sql=SELECT ' + fields + ' FROM "' + bi_resource + '" ORDER BY "Date" DESC, "_id" DESC LIMIT 2000' 
   
   $http.get(DataURL).success(function(data) {
-  $scope.rowCollection = data.result.records;
-  $scope.displayedCollection = [].concat($scope.rowCollection);
-    });
-  
-  $scope.getters={
-    ConstructionCost: function (value) {return Math.round(value.ConstructionCost)},
-    Address: function (value) {return value.Address.replace(/[^a-z]/gi,'')}};
+  $scope.PermitOptions.data = data.result.records;
+})
 
-  $http.get(CountURL).success(function(data) {
-    $scope.RecordCount = data.result.records[0].count;
-    });
+  $scope.PermitOptions = {
+    enableSorting: true,
+    enableFiltering: true,
+    columnDefs: [
+      { field: 'Date' },
+      { field: 'Address' },
+      { field: 'PermitType'},
+      { field: 'ConstructionCost'},
+      { field: 'OwnerName'},
+      { field: 'Contractor'}
+    ]};
+
 }]);
 
 /* Code Cases Search */
