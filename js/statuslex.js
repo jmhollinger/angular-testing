@@ -62,8 +62,8 @@ var row_resource = 'f64d48f2-3d01-499e-b182-7793eb7bff7c'
 slControllers.controller('PermitSearchCtrl', ['$scope', '$http','$filter',
   function ($scope, $http, $filter) {
   
-  var fields = '"Date", "Address", "PermitType", "ConstructionCost", "OwnerName", "Contractor"'
-  var DataURL = 'http://www.civicdata.com/api/action/datastore_search_sql?sql=SELECT ' + fields + ' FROM "' + bi_resource + '" ORDER BY "Date" DESC, "_id" DESC LIMIT 2000' 
+  var fields = '"_id", "Date", "Address", "PermitType", "ConstructionCost", "OwnerName", "Contractor"'
+  var DataURL = 'http://www.civicdata.com/api/action/datastore_search_sql?sql=SELECT ' + fields + ' FROM "' + bi_resource + '" ORDER BY "Date" DESC, "_id" DESC LIMIT 1000' 
   
   $http.get(DataURL).success(function(data) {
   $scope.PermitOptions.data = data.result.records;
@@ -73,12 +73,12 @@ slControllers.controller('PermitSearchCtrl', ['$scope', '$http','$filter',
     enableSorting: true,
     enableFiltering: true,
     columnDefs: [
-      { field: 'Date' },
-      { field: 'Address' },
-      { field: 'PermitType'},
-      { field: 'ConstructionCost'},
-      { field: 'OwnerName'},
-      { field: 'Contractor'}
+      { field: 'Date', type: 'date', cellTemplate: '<div class="ui-grid-cell-contents"><a ng-href="#bldg-permits/{{row.entity._id}}">{{COL_FIELD | date:\'shortDate\'}}</a></div>'},
+      { field: 'Address', cellTemplate: '<div class="ui-grid-cell-contents"><a ng-href="#bldg-permits/{{row.entity._id}}">{{COL_FIELD | titlecase}}</a></div>'},
+      { field: 'PermitType', cellTemplate: '<div class="ui-grid-cell-contents"><a ng-href="#bldg-permits/{{row.entity._id}}">{{COL_FIELD | titlecase}}</a></div>'},
+      { field: 'ConstructionCost', type: 'number',  cellTemplate: '<div class="ui-grid-cell-contents"><a ng-href="#bldg-permits/{{row.entity._id}}">{{COL_FIELD | currency}}</a></div>'},
+      { field: 'OwnerName', cellTemplate: '<div class="ui-grid-cell-contents"><a ng-href="#bldg-permits/{{row.entity._id}}">{{COL_FIELD | titlecase}}</a></div>'},
+      { field: 'Contractor', cellTemplate: '<div class="ui-grid-cell-contents"><a ng-href="#bldg-permits/{{row.entity._id}}">{{COL_FIELD | titlecase}}</a></div>'}
     ]};
 
 }]);
