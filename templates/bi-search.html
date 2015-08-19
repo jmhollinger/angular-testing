@@ -1,4 +1,65 @@
-<div ng-controller="PermitSearchCtrl">
-  <div ui-grid="PermitOptions" ui-grid-pagination ui-grid-resize-columns class="grid"></div>
+<div class="row">
+  <div class="form-group col-md-6">
+    <input ng-model="keyword" placeholder="Search" class="input-md form-control" type="search">
+  </div>
+  <div class="form-group col-md-3">
+    <select ng-model="sort" class="input-md form-control">
+                  <option value='"Date" DESC'>Date - Newest to Oldest</option>
+                  <option value='"Date" ASC'>Date - Oldest to Newest</option>
+                  <option value='"Address" DESC'>Address - Z to A</option>
+                  <option value='"Address" ASC'>Address - A to Z</option>
+                  <option value='"PermitType" DESC'>Permit Type - Z to A</option>
+                  <option value='"PermitType" ASC'>Permit Type - A to Z</option>
+                  <option value='"ConstructionCost" DESC'>Construction Cost - High to Low</option>
+                  <option value='"ConstructionCost" ASC'>Construction Cost - Low to High</option>
+                  <option value='"OwnerName" DESC'>Owner - Z to A</option>
+                  <option value='"OwnerName" ASC'>Owner - A to Z</option>
+                  <option value='"Contractor" DESC'>Contractor - Z to A</option>
+                  <option value='"Contractor" ASC'>Contractor - A to Z</option>
+    </select>
+  </div>
+  <div class="form-group col-md-3">
+    <select ng-model="limit" class="input-md form-control">
+                  <option value='10'>Show 10 rows</option>
+                  <option value='25'>Show 25 rows</option>
+                  <option value='50'>Show 50 rows</option>
+                  <option value='100'>Show 100 rows</option>
+    </select>
+  </div>
 </div>
+<table class="table table-striped hidden-xs">
+       <thead>
+           <tr>
+             <th>Date</th>
+             <th>Address</th>
+             <th>Permit Type</th>
+             <th>Construction Cost</th>
+             <th>Owner Name</th>
+             <th>Contractor</th>
+           </tr>
+       </thead>
+       <tbody>
+       <tr ng-repeat="x in rows">
+           <td><a ng-href="#bldg-permits/{{x._id}}">{{x.Date | date:'shortDate'}}</a></td>
+           <td><a ng-href="#bldg-permits/{{x._id}}">{{x.Address | titlecase}}</a></td>
+           <td><a ng-href="#bldg-permits/{{x._id}}">{{x.PermitType | titlecase}}</a></td>
+           <td><a ng-href="#bldg-permits/{{x._id}}">{{x.ConstructionCost | currency}}</a></td>
+           <td><a ng-href="#bldg-permits/{{x._id}}">{{x.OwnerName | titlecase}}</a></td>
+           <td><a ng-href="#bldg-permits/{{x._id}}">{{x.Contractor |titlecase}}</a></td>
+       </tr>
+       </tbody>
+</table>
 
+<div class="visible-xs-block">
+ <div class="col-sm-12" ng-repeat="x in rows">
+          <hr/>
+          <a ng-href="#code-cases/{{x._id}}">
+          <strong>{{x.CleanAddress | titlecase}}</strong><br/>
+          Issued on {{x.Date | date:'shortDate'}}<br/>
+          {{x.PermitType | titlecase}}<br/>
+          Construction Cost: {{x.ConstructionCost | currency}}
+          </a>
+ </div>
+</div>
+    
+<p class="text-center">Your search returned {{RecordCount | number}} records.</p>

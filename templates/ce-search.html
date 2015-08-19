@@ -1,18 +1,42 @@
-<table st-table="displayedCollection" st-safe-src="rowCollection" class="table table-striped hidden-xs">
+<div class="row">
+  <div class="form-group col-md-6">
+    <input ng-model="keyword" placeholder="Search" class="input-md form-control" type="search">
+  </div>
+  <div class="form-group col-md-3">
+    <select ng-model="sort" class="input-md form-control">
+                  <option value='"DateOpened" DESC'>Date Opened - Newest to Oldest</option>
+                  <option value='"DateOpened" ASC'>Date Opened - Oldest to Newest</option>
+                  <option value='"Address" DESC'>Address - Z to A</option>
+                  <option value='"Address" ASC'>Address - A to Z</option>
+                  <option value='"CaseType" DESC'>Case Type - Z to A</option>
+                  <option value='"CaseType" ASC'>Case Type - A to Z</option>
+                  <option value='"Status" DESC'>Status - Z to A</option>
+                  <option value='"Status" ASC'>Status - A to Z</option>
+                  <option value='"StatusDate" DESC'>Status Date - Newest to Oldest</option>
+                  <option value='"StatusDate" ASC'>Status Date - Oldest to Newest</option>
+    </select>
+  </div>
+  <div class="form-group col-md-3">
+    <select ng-model="limit" class="input-md form-control">
+                  <option value='10'>Show 10 rows</option>
+                  <option value='25'>Show 25 rows</option>
+                  <option value='50'>Show 50 rows</option>
+                  <option value='100'>Show 100 rows</option>
+    </select>
+  </div>
+</div>
+<table class="table table-striped hidden-xs">
        <thead>
            <tr>
-              <th colspan="5"><input st-search placeholder="Search" class="input-md form-control" type="search"></th>
-           </tr>
-           <tr>
-             <th st-sort="DateOpened" class="sortable">Date Opened</th>
-             <th st-sort="getters.Address" class="sortable">Address</th>
-             <th st-sort="CaseType" class="sortable">Case Type</th>
-             <th st-sort="Status" class="sortable">Status</th>
-             <th st-sort="StatusDate" class="sortable">Status Date</th>
+             <th>Date Opened</th>
+             <th>Address</th>
+             <th>Case Type</th>
+             <th>Status</th>
+             <th>Status Date</th>
            </tr>
        </thead>
        <tbody>
-       <tr ng-repeat="x in displayedCollection">
+       <tr ng-repeat="x in rows">
            <td><a ng-href="#code-cases/{{x._id}}">{{x.DateOpened | date:'shortDate'}}</a></td>
            <td><a ng-href="#code-cases/{{x._id}}">{{x.Address | titlecase}}</a></td>
            <td><a ng-href="#code-cases/{{x._id}}">{{x.CaseType | titlecase}}</a></td>
@@ -22,22 +46,16 @@
        </tbody>
 </table>
 
-<table st-table="displayedCollection" st-safe-src="rowCollection" class="table table-striped visible-xs-block">
-      <thead>
-        <tr>
-         <th><input st-search placeholder="Search" class="input-md form-control" type="search"></th>
-        </tr>
-      </thead>
-      <tbody>
-      <tr ng-repeat="x in displayedCollection">
-        <td>
+<div class="visible-xs-block">
+ <div class="col-sm-12" ng-repeat="x in rows">
+          <hr/>
           <a ng-href="#code-cases/{{x._id}}">
-          <span class="bold">{{x.CleanAddress | titlecase}}</span><br/>
-          {{x.DateOpened | date:'shortDate'}}<br/>
-          {{x.CaseType | titlecase}} Case</a>
-        </td>
-      </tr>
-    </tbody>
-</table>
+          <strong>{{x.CleanAddress | titlecase}}</strong><br/>
+          Opened on {{x.DateOpened | date:'shortDate'}}<br/>
+          {{x.CaseType | titlecase}} Case<br/>
+          {{x.Status | titlecase}} - {{x.StatusDate | date:'shortDate'}}
+          </a>
+ </div>
+</div>
     
 <p class="text-center">Your search returned {{RecordCount | number}} records.</p>

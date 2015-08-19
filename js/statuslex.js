@@ -2,7 +2,7 @@
 
 
 /* Main StatusLex App Module */
-var statuslex = angular.module('statuslex', [ 'ngRoute', 'slControllers', 'slServices', 'uiGmapgoogle-maps', 'smart-table', 'ui.grid', 'ui.grid.resizeColumns']);
+var statuslex = angular.module('statuslex', [ 'ngRoute', 'slControllers', 'slServices', 'uiGmapgoogle-maps']);
 
 /* Controllers Module */
 var slControllers = angular.module('slControllers', []);
@@ -59,55 +59,60 @@ var ce_resource = 'ad346da7-ce88-4c77-a0e1-10ff09bb0622'
 var row_resource = 'f64d48f2-3d01-499e-b182-7793eb7bff7c'
 
 /* Bulding Permit Search */
-slControllers.controller('PermitSearchCtrl', ['$scope', '$http','$filter',
-  function ($scope, $http, $filter) {
+slControllers.controller('PermitSearchCtrl', ['$scope', '$timeout','CKAN',
+  function ($scope, $timeout, CKAN) {
   
-  var fields = '"_id", "Date", "Address", "PermitType", "ConstructionCost", "OwnerName", "Contractor"'
-  var DataURL = 'http://www.civicdata.com/api/action/datastore_search_sql?sql=SELECT ' + fields + ' FROM "' + bi_resource + '" ORDER BY "Date" DESC, "_id" DESC LIMIT 1000' 
-  
-  $http.get(DataURL).success(function(data) {
-  $scope.PermitOptions.data = data.result.records;
-})
+	$scope.sort = '"Date" DESC'
+	$scope.keyword = ''
+	$scope.limit = '10'
 
-  $scope.PermitOptions = {
-    enableSorting: true,
-    enableFiltering: true,
-    columnDefs: [
-      { field: 'Date', type: 'date', cellTemplate: '<div class="ui-grid-cell-contents"><a ng-href="#bldg-permits/{{row.entity._id}}">{{COL_FIELD | date:\'shortDate\'}}</a></div>'},
-      { field: 'Address', cellTemplate: '<div class="ui-grid-cell-contents"><a ng-href="#bldg-permits/{{row.entity._id}}">{{COL_FIELD | titlecase}}</a></div>'},
-      { field: 'PermitType', cellTemplate: '<div class="ui-grid-cell-contents"><a ng-href="#bldg-permits/{{row.entity._id}}">{{COL_FIELD | titlecase}}</a></div>'},
-      { field: 'ConstructionCost', type: 'number',  cellTemplate: '<div class="ui-grid-cell-contents"><a ng-href="#bldg-permits/{{row.entity._id}}">{{COL_FIELD | currency}}</a></div>'},
-      { field: 'OwnerName', cellTemplate: '<div class="ui-grid-cell-contents"><a ng-href="#bldg-permits/{{row.entity._id}}">{{COL_FIELD | titlecase}}</a></div>'},
-      { field: 'Contractor', cellTemplate: '<div class="ui-grid-cell-contents"><a ng-href="#bldg-permits/{{row.entity._id}}">{{COL_FIELD | titlecase}}</a></div>'}
-    ]};
-
+    var timeout;
+	$scope.$watchGroup(['keyword', 'sort', 'limit'], function(newvals) {
+      if (newvals) {
+        if (timeout) $timeout.cancel(timeout);
+        timeout = $timeout(function() {
+          CKAN.query(bi_resource, $scope.keyword, $scope.sort, $scope.limit, '0').success(function(data) {
+			  $scope.rows = data.result.records
+		  })
+		  CKAN.count(bi_resource, $scope.keyword).success(function(data) {
+		  	 $scope.RecordCount = data.result.records[0].count;
+		  })
+        }, 350);
+      }
+    })
 }]);
 
 /* Code Cases Search */
-slControllers.controller('CodeSearchCtrl', ['$scope', '$http',
-  function ($scope, $http) {
-  var DataURL = 'http://www.civicdata.com/api/action/datastore_search_sql?sql=SELECT * FROM "' + ce_resource + '" ORDER BY "DateOpened" DESC, "_id" DESC LIMIT 500'
-  var CountURL = 'http://www.civicdata.com/api/action/datastore_search_sql?sql=SELECT COUNT(*) FROM "' + ce_resource + '"'
-  
-  $http.get(DataURL).success(function(data) {
-  $scope.rowCollection = data.result.records;
-  $scope.displayedCollection = [].concat($scope.rowCollection);
-    });
+slControllers.controller('CodeSearchCtrl', ['$scope', '$timeout', 'CKAN',
+  function ($scope, $timeout, CKAN) {
+	 
+	 $scope.sort = '"StatusDate" DESC'
+	 $scope.keyword = ''
+	 $scope.limit = '10'
+    
+    var timeout;
+	$scope.$watchGroup(['keyword', 'sort', 'limit'], function(newvals) {
+      if (newvals) {
+        if (timeout) $timeout.cancel(timeout);
+        timeout = $timeout(function() {
+          CKAN.query(ce_resource, $scope.keyword, $scope.sort, $scope.limit, '0').success(function(data) {
+			  $scope.rows = data.result.records
+		  })
+		  CKAN.count(ce_resource, $scope.keyword).success(function(data) {
+		  	 $scope.RecordCount = data.result.records[0].count;
+		  })
+        }, 350);
+      }
+    })
 
-  $scope.getters={
-  Address: function (value) {return value.Address.replace(/[^a-z]/gi,'')}};
-
-  $http.get(CountURL).success(function(data) {
-  $scope.RecordCount = data.result.records[0].count;
-    });
 }]);
 
 /* ROW Permit Search */
 slControllers.controller('ROWSearchCtrl', ['$scope', '$http',
   function ($scope, $http) {
-  var DataURL = 'http://www.civicdata.com/api/action/datastore_search_sql?sql=SELECT * FROM "' + row_resource + '" ORDER BY "IssueDate" DESC, "_id" DESC LIMIT 500'
+  var DataURL = 'http://www.civicdata.com/api/action/datastore_search_sql?sql=SELECT * FROM "' + row_resource + '" ORDER BY "IssueDate" DESC, "_id " DESC LIMIT 500'
   var CountURL = 'http://www.civicdata.com/api/action/datastore_search_sql?sql=SELECT COUNT(*) FROM "' + row_resource + '"'
-    
+
   $http.get(DataURL).success(function(data) {
   $scope.rowCollection = data.result.records;
   $scope.displayedCollection = [].concat($scope.rowCollection);
@@ -141,17 +146,18 @@ slControllers.controller('PermitDetailCtrl', ['$scope', '$http', '$routeParams',
 
 
 /* Code Case Record */
-slControllers.controller('CodeDetailCtrl', ['$scope', '$http','$routeParams',
-  function ($scope, $http, $routeParams) {
-  var DataURL = 'http://www.civicdata.com/api/action/datastore_search_sql?sql=SELECT * FROM "' + ce_resource + '" WHERE "_id"  =' + $routeParams.param
-    $http.get(DataURL).success(function(data) {
-    $scope.DetailData = data.result.records;
-    var lng = data.result.records[0].lat
-    var lat = data.result.records[0].lng
-    $scope.map = { center: { latitude: lat, longitude: lng }, zoom: 17 };
-    $scope.marker = { id: 0, coords: { latitude: lat, longitude: lng }}
-    $scope.infowindow = {show: true}
-    });
+slControllers.controller('CodeDetailCtrl', ['$scope', '$http','$routeParams', 'CKAN',
+  function ($scope, $http, $routeParams, CKAN) {
+     
+     CKAN.record(ce_resource, $routeParams.param).success(function(data){
+	     $scope.DetailData = data.result.records;
+	     var lng = data.result.records[0].lat
+	     var lat = data.result.records[0].lng
+	     $scope.map = { center: { latitude: lat, longitude: lng }, zoom: 17 };
+	     $scope.marker = { id: 0, coords: { latitude: lat, longitude: lng }}
+	     $scope.infowindow = {show: true}	
+     }) 
+
     $scope.RecordType = 'Code Enforcement Case'
     $scope.Meta = 'Code enforcement cases are opened based on citizen complaints for violations of nuisance code, the International Property Maintenance Code, and sidewalk regulations.'
     $scope.Contact = 'If you have questions or concerns about code enforcement cases, please contact the the Division of Code Enforcement at (859) 425-2255.'
@@ -192,3 +198,37 @@ statuslex.filter('titlecase', function () {
 });
 
 /*--------------Services--------------*/
+
+slServices.factory('CKAN', ['$http', function($http){
+	return {
+		
+		query: function(dataset, terms, sort, limit, offset){
+		if (terms != ''){
+			var fulltext = ' WHERE "_full_text" @@ to_tsquery(\'' + FormatSearch(terms) + '\') '}
+		else {
+			var fulltext = ''}	
+		var dataurl1 = 'http://www.civicdata.com/api/action/datastore_search_sql?sql=SELECT * FROM "' + dataset + '"' + fulltext + 'ORDER BY ' + sort +', "_id" DESC' + ' LIMIT ' + limit
+		return $http.get(dataurl1)
+		},
+		record: function(dataset, id){
+		var dataurl2 = 'http://www.civicdata.com/api/action/datastore_search_sql?sql=SELECT * FROM "' + dataset + '" WHERE "_id" = ' + id
+		return $http.get(dataurl2)
+		},
+		count: function(dataset, terms){
+		if (terms != ''){
+			var fulltext = ' WHERE "_full_text" @@ to_tsquery(\'' + FormatSearch(terms) + '\') '}
+		else {
+			var fulltext = ''}	
+		var dataurl3 = 'http://www.civicdata.com/api/action/datastore_search_sql?sql=SELECT COUNT(*) FROM "' + dataset + '"' + fulltext
+		return $http.get(dataurl3)
+		},
+}
+}])
+
+function FormatSearch (input){
+var wordarray = input.trim().split(/\s+/gim)  
+for (i = 0; i < wordarray.length; i++) { 
+wordarray[i] = wordarray[i].replace(/[\W]|[_]|/gim,"").toUpperCase()
+}
+return wordarray.toString().replace(/,+/gim,",").replace(/,$/gim,"").replace(/,/gim,"%26")
+}
