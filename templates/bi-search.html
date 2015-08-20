@@ -1,6 +1,6 @@
 <div class="row">
   <div class="form-group col-md-6">
-    <input ng-model="keyword" placeholder="Search" class="input-md form-control" type="search">
+    <input ng-model="keyword" name="search" placeholder="Search" class="input-md form-control" type="search">
   </div>
   <div class="form-group col-md-3">
     <select ng-model="sort" class="input-md form-control">
@@ -20,22 +20,17 @@
   </div>
   <div class="form-group col-md-3">
     <select ng-model="limit" class="input-md form-control">
-                  <option value='10'>Show 10 rows</option>
-                  <option value='25'>Show 25 rows</option>
-                  <option value='50'>Show 50 rows</option>
-                  <option value='100'>Show 100 rows</option>
+                  <option value=10>10 items per page</option>
+                  <option value=25>25 items per page</option>
+                  <option value=50>50 items per page</option>
+                  <option value=100>100 items per page</option>
     </select>
   </div>
 </div>
 <table class="table table-striped hidden-xs">
        <thead>
            <tr>
-             <th>Date</th>
-             <th>Address</th>
-             <th>Permit Type</th>
-             <th>Construction Cost</th>
-             <th>Owner Name</th>
-             <th>Contractor</th>
+             <th ng-repeat="x in fields">{{x.display}}</th>
            </tr>
        </thead>
        <tbody>
@@ -62,4 +57,13 @@
  </div>
 </div>
     
-<p class="text-center">Your search returned {{RecordCount | number}} records.</p>
+<div class="text-center">
+  <ul class="pagination">
+      <li class="pointer" ng-click='first()'><a>First</a></li>
+      <li class="pointer" ng-show="showprev" ng-click='previous()'><a>Previous</a></li>
+      <li class="pointer" ng-show="shownext" ng-click='next()'><a>Next</a></li>
+      <li class="pointer" ng-click='last()'><a>Last</a></li>
+  </ul>
+</div>
+
+<p class="text-center">Page {{page}} of {{totalpages | number}} ({{ (limit * page) - (limit - 1) | number}} - {{limit * page | number}} of {{RecordCount | number}} total items.)</p>

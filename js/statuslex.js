@@ -61,49 +61,104 @@ var row_resource = 'f64d48f2-3d01-499e-b182-7793eb7bff7c'
 /* Bulding Permit Search */
 slControllers.controller('PermitSearchCtrl', ['$scope', '$timeout','CKAN',
   function ($scope, $timeout, CKAN) {
-  
+  	
+  	$scope.fields = [
+  	{field: 'Date', display: "Date", sortlow: "Oldest", sorthigh: "Newest" },
+  	{field: 'Address', display: "Address", sortlow: "A", sorthigh: "Z" },
+  	{field: 'PermitType', display: "Permit Type", sortlow: "A", sorthigh: "Z" },
+  	{field: 'ConstructionCost', display: "Construction Cost", sortlow: "Low", sorthigh: "High" },
+  	{field: 'OwnerName', display: "Owner", sortlow: "A", sorthigh: "Z" },
+  	{field: 'Contractor', display: "Contractor", sortlow: "A", sorthigh: "Z" }
+  	]
+
 	$scope.sort = '"Date" DESC'
 	$scope.keyword = ''
-	$scope.limit = '10'
+	$scope.limit = 10
+    $scope.page = 1
+    $scope.offset = 0
 
     var timeout;
-	$scope.$watchGroup(['keyword', 'sort', 'limit'], function(newvals) {
+
+	$scope.$watchGroup(['keyword', 'sort', 'limit'], function(newvals, oldvals) {
       if (newvals) {
         if (timeout) $timeout.cancel(timeout);
         timeout = $timeout(function() {
-          CKAN.query(bi_resource, $scope.keyword, $scope.sort, $scope.limit, '0').success(function(data) {
-			  $scope.rows = data.result.records
+          CKAN.query(bi_resource, $scope.keyword, $scope.sort, $scope.limit, $scope.offset).success(function(data) {
+			 $scope.rows = data.result.records
+			 $scope.page = 1
 		  })
 		  CKAN.count(bi_resource, $scope.keyword).success(function(data) {
 		  	 $scope.RecordCount = data.result.records[0].count;
-		  })
+		 	 $scope.totalpages = Math.ceil($scope.RecordCount / $scope.limit)
+		  })	 
         }, 350);
       }
     })
+
+	$scope.$watch('page', function(newval, oldval){
+		if ($scope.page === 1) {$scope.showprev = false} else {$scope.showprev = true}
+		if ($scope.page === $scope.totalpages) {$scope.shownext = false} else {$scope.shownext = true}
+		$scope.offset = ($scope.page - 1) * $scope.limit
+		CKAN.query(bi_resource, $scope.keyword, $scope.sort, $scope.limit, $scope.offset).success(function(data) {
+			 $scope.rows = data.result.records
+			})
+	})
+
+    $scope.next = function() {$scope.page = $scope.page + 1}
+	$scope.previous = function() {$scope.page = $scope.page - 1}
+	$scope.first = function() {$scope.page = 1}
+    $scope.last = function() {$scope.page = $scope.totalpages}
+
 }]);
 
 /* Code Cases Search */
 slControllers.controller('CodeSearchCtrl', ['$scope', '$timeout', 'CKAN',
   function ($scope, $timeout, CKAN) {
 	 
-	 $scope.sort = '"StatusDate" DESC'
-	 $scope.keyword = ''
-	 $scope.limit = '10'
+  	$scope.fields = [
+  	{field: 'DateOpened', display: "Date Opened", sortlow: "Oldest", sorthigh: "Newest" },
+  	{field: 'Address', display: "Address", sortlow: "A", sorthigh: "Z" },
+  	{field: 'CaseType', display: "Case Type", sortlow: "A", sorthigh: "Z" },
+  	{field: 'Status', display: "Status", sortlow: "Low", sorthigh: "High" },
+  	{field: 'StatusDate', display: "Status Date", sortlow: "Oldest", sorthigh: "Newest" }]
+
+	$scope.sort = '"StatusDate" DESC'
+	$scope.keyword = ''
+	$scope.limit = 10
+    $scope.page = 1
+    $scope.offset = 0
     
     var timeout;
-	$scope.$watchGroup(['keyword', 'sort', 'limit'], function(newvals) {
+
+	$scope.$watchGroup(['keyword', 'sort', 'limit'], function(newvals, oldvals) {
       if (newvals) {
         if (timeout) $timeout.cancel(timeout);
         timeout = $timeout(function() {
-          CKAN.query(ce_resource, $scope.keyword, $scope.sort, $scope.limit, '0').success(function(data) {
-			  $scope.rows = data.result.records
+          CKAN.query(ce_resource, $scope.keyword, $scope.sort, $scope.limit, $scope.offset).success(function(data) {
+			 $scope.rows = data.result.records
+			 $scope.page = 1
 		  })
 		  CKAN.count(ce_resource, $scope.keyword).success(function(data) {
 		  	 $scope.RecordCount = data.result.records[0].count;
-		  })
+		 	 $scope.totalpages = Math.ceil($scope.RecordCount / $scope.limit)
+		  })	 
         }, 350);
       }
     })
+
+	$scope.$watch('page', function(newval, oldval){
+		if ($scope.page === 1) {$scope.showprev = false} else {$scope.showprev = true}
+		if ($scope.page === $scope.totalpages) {$scope.shownext = false} else {$scope.shownext = true}
+		$scope.offset = ($scope.page - 1) * $scope.limit
+		CKAN.query(ce_resource, $scope.keyword, $scope.sort, $scope.limit, $scope.offset).success(function(data) {
+			 $scope.rows = data.result.records
+			})
+	})
+
+    $scope.next = function() {$scope.page = $scope.page + 1}
+	$scope.previous = function() {$scope.page = $scope.page - 1}
+	$scope.first = function() {$scope.page = 1}
+    $scope.last = function() {$scope.page = $scope.totalpages}
 
 }]);
 
@@ -128,17 +183,17 @@ slControllers.controller('ROWSearchCtrl', ['$scope', '$http',
 
 
 /* Bulding Permit Record */
-slControllers.controller('PermitDetailCtrl', ['$scope', '$http', '$routeParams',
-  function ($scope, $http, $routeParams) {
-  var DataURL = 'http://www.civicdata.com/api/action/datastore_search_sql?sql=SELECT * FROM "' + bi_resource + '" WHERE "_id"  =' + $routeParams.param
-    $http.get(DataURL).success(function(data) {
-    $scope.DetailData = data.result.records;
-    var lng = data.result.records[0].lat
-    var lat = data.result.records[0].lng
-    $scope.map = { center: { latitude: lat, longitude: lng }, zoom: 17 };
-    $scope.marker = { id: 0, coords: { latitude: lat, longitude: lng }}
-    $scope.infowindow = {show: true}
-   });
+slControllers.controller('PermitDetailCtrl', ['$scope', '$routeParams', 'CKAN',
+  function ($scope, $routeParams, CKAN) {
+	CKAN.record(bi_resource, $routeParams.param).success(function(data){
+	     $scope.DetailData = data.result.records;
+	     var lng = data.result.records[0].lat
+	     var lat = data.result.records[0].lng
+	     $scope.map = { center: { latitude: lat, longitude: lng }, zoom: 17 };
+	     $scope.marker = { id: 0, coords: { latitude: lat, longitude: lng }}
+	     $scope.infowindow = {show: true}	
+     })
+
     $scope.RecordType = 'Building Permit'
     $scope.Meta = 'Building permits are issued by the Division of Building Inspection and the Division of Planning for a variety of activities including construction and certification of compliance with zoning. The permit information above is submitted by the applicant.'
     $scope.Contact = 'If you have questions or concerns about building permits, please contact the the Division of Building Inspection at (859) 425-2255.'
@@ -146,10 +201,10 @@ slControllers.controller('PermitDetailCtrl', ['$scope', '$http', '$routeParams',
 
 
 /* Code Case Record */
-slControllers.controller('CodeDetailCtrl', ['$scope', '$http','$routeParams', 'CKAN',
-  function ($scope, $http, $routeParams, CKAN) {
-     
-     CKAN.record(ce_resource, $routeParams.param).success(function(data){
+slControllers.controller('CodeDetailCtrl', ['$scope', '$routeParams', 'CKAN',
+  function ($scope, $routeParams, CKAN) {
+	
+	CKAN.record(ce_resource, $routeParams.param).success(function(data){
 	     $scope.DetailData = data.result.records;
 	     var lng = data.result.records[0].lat
 	     var lat = data.result.records[0].lng
@@ -199,15 +254,16 @@ statuslex.filter('titlecase', function () {
 
 /*--------------Services--------------*/
 
-slServices.factory('CKAN', ['$http', function($http){
+/* Gets Data from CKAN */
+slServices.factory('CKAN', ['$http','searchbox', function($http, searchbox){
 	return {
 		
 		query: function(dataset, terms, sort, limit, offset){
 		if (terms != ''){
-			var fulltext = ' WHERE "_full_text" @@ to_tsquery(\'' + FormatSearch(terms) + '\') '}
+			var fulltext = ' WHERE "_full_text" @@ to_tsquery(\'' + searchbox.input(terms) + '\') '}
 		else {
 			var fulltext = ''}	
-		var dataurl1 = 'http://www.civicdata.com/api/action/datastore_search_sql?sql=SELECT * FROM "' + dataset + '"' + fulltext + 'ORDER BY ' + sort +', "_id" DESC' + ' LIMIT ' + limit
+		var dataurl1 = 'http://www.civicdata.com/api/action/datastore_search_sql?sql=SELECT * FROM "' + dataset + '"' + fulltext + 'ORDER BY ' + sort +', "_id" DESC' + ' LIMIT ' + limit + ' OFFSET ' + offset
 		return $http.get(dataurl1)
 		},
 		record: function(dataset, id){
@@ -216,7 +272,7 @@ slServices.factory('CKAN', ['$http', function($http){
 		},
 		count: function(dataset, terms){
 		if (terms != ''){
-			var fulltext = ' WHERE "_full_text" @@ to_tsquery(\'' + FormatSearch(terms) + '\') '}
+			var fulltext = ' WHERE "_full_text" @@ to_tsquery(\'' + searchbox.input(terms) + '\') '}
 		else {
 			var fulltext = ''}	
 		var dataurl3 = 'http://www.civicdata.com/api/action/datastore_search_sql?sql=SELECT COUNT(*) FROM "' + dataset + '"' + fulltext
@@ -225,10 +281,14 @@ slServices.factory('CKAN', ['$http', function($http){
 }
 }])
 
-function FormatSearch (input){
-var wordarray = input.trim().split(/\s+/gim)  
-for (i = 0; i < wordarray.length; i++) { 
-wordarray[i] = wordarray[i].replace(/[\W]|[_]|/gim,"").toUpperCase()
+/* Cleans Search Input for CKAN API */
+slServices.factory('searchbox', [function(){
+	return {
+	input: function(input){
+	var wordarray = input.trim().split(/\s+/gim)  
+	for (i = 0; i < wordarray.length; i++) { 
+	wordarray[i] = wordarray[i].replace(/[\W]|[_]|/gim,"").toUpperCase()
+	}
+	return wordarray.toString().replace(/,+/gim,",").replace(/,$/gim,"").replace(/,/gim,"%26")}	
 }
-return wordarray.toString().replace(/,+/gim,",").replace(/,$/gim,"").replace(/,/gim,"%26")
-}
+}])
