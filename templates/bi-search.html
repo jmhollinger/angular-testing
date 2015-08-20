@@ -4,26 +4,15 @@
   </div>
   <div class="form-group col-md-3">
     <select ng-model="sort" class="input-md form-control">
-                  <option value='"Date" DESC'>Date - Newest to Oldest</option>
-                  <option value='"Date" ASC'>Date - Oldest to Newest</option>
-                  <option value='"Address" DESC'>Address - Z to A</option>
-                  <option value='"Address" ASC'>Address - A to Z</option>
-                  <option value='"PermitType" DESC'>Permit Type - Z to A</option>
-                  <option value='"PermitType" ASC'>Permit Type - A to Z</option>
-                  <option value='"ConstructionCost" DESC'>Construction Cost - High to Low</option>
-                  <option value='"ConstructionCost" ASC'>Construction Cost - Low to High</option>
-                  <option value='"OwnerName" DESC'>Owner - Z to A</option>
-                  <option value='"OwnerName" ASC'>Owner - A to Z</option>
-                  <option value='"Contractor" DESC'>Contractor - Z to A</option>
-                  <option value='"Contractor" ASC'>Contractor - A to Z</option>
+                  <optgroup ng-repeat="x in fields" label="{{x.display}}">
+                      <option value='"{{x.field}}" DESC'>{{x.display}} - {{x.sorthigh}} to {{x.sortlow}}</option>
+                      <option value='"{{x.field}}" ASC'>{{x.display}}  - {{x.sortlow}} to {{x.sorthigh}}</option>
+                  </optgroup>
     </select>
   </div>
   <div class="form-group col-md-3">
     <select ng-model="limit" class="input-md form-control">
-                  <option value=10>10 items per page</option>
-                  <option value=25>25 items per page</option>
-                  <option value=50>50 items per page</option>
-                  <option value=100>100 items per page</option>
+                  <option ng-repeat="x in limits" value="{{x.option}}">{{x.display}}</option>
     </select>
   </div>
 </div>

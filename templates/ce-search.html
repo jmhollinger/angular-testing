@@ -4,24 +4,15 @@
   </div>
   <div class="form-group col-md-3">
     <select ng-model="sort" class="input-md form-control">
-                  <option value='"DateOpened" DESC'>Date Opened - Newest to Oldest</option>
-                  <option value='"DateOpened" ASC'>Date Opened - Oldest to Newest</option>
-                  <option value='"Address" DESC'>Address - Z to A</option>
-                  <option value='"Address" ASC'>Address - A to Z</option>
-                  <option value='"CaseType" DESC'>Case Type - Z to A</option>
-                  <option value='"CaseType" ASC'>Case Type - A to Z</option>
-                  <option value='"Status" DESC'>Status - Z to A</option>
-                  <option value='"Status" ASC'>Status - A to Z</option>
-                  <option value='"StatusDate" DESC'>Status Date - Newest to Oldest</option>
-                  <option value='"StatusDate" ASC'>Status Date - Oldest to Newest</option>
+                  <optgroup ng-repeat="x in fields" label="{{x.display}}">
+                      <option value='"{{x.field}}" DESC'>{{x.display}} - {{x.sorthigh}} to {{x.sortlow}}</option>
+                      <option value='"{{x.field}}" ASC'>{{x.display}}  - {{x.sortlow}} to {{x.sorthigh}}</option>
+                  </optgroup>
     </select>
   </div>
   <div class="form-group col-md-3">
     <select ng-model="limit" class="input-md form-control">
-                  <option value=10>10 items per page</option>
-                  <option value=25>25 items per page</option>
-                  <option value=50>50 items per page</option>
-                  <option value=100>100 items per page</option>
+                  <option ng-repeat="x in limits" value="{{x.option}}">{{x.display}}</option>
     </select>
   </div>
 </div>
@@ -63,5 +54,5 @@
   </ul>
 </div>
 
-<p class="text-center">Page {{page}} of {{totalpages | number}} ({{ (limit * page) - (limit - 1) | number}} - {{limit * page | number}} of {{RecordCount | number}} total items.)</p>
+<p class="text-center">Page {{page | number}} of {{totalpages | number}} ({{ (limit * page) - (limit - 1) | number}} - {{limit * page | number}} of {{RecordCount | number}} total items.)</p>
   

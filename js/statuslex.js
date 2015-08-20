@@ -61,7 +61,14 @@ var row_resource = 'f64d48f2-3d01-499e-b182-7793eb7bff7c'
 /* Bulding Permit Search */
 slControllers.controller('PermitSearchCtrl', ['$scope', '$timeout','CKAN',
   function ($scope, $timeout, CKAN) {
-  	
+  	$scope.showprev = true
+	$scope.shownext = true
+  	$scope.sort = '"Date" DESC'
+	$scope.keyword = ''
+	$scope.limit = 10
+    $scope.page = 1
+    $scope.offset = 0
+
   	$scope.fields = [
   	{field: 'Date', display: "Date", sortlow: "Oldest", sorthigh: "Newest" },
   	{field: 'Address', display: "Address", sortlow: "A", sorthigh: "Z" },
@@ -71,11 +78,12 @@ slControllers.controller('PermitSearchCtrl', ['$scope', '$timeout','CKAN',
   	{field: 'Contractor', display: "Contractor", sortlow: "A", sorthigh: "Z" }
   	]
 
-	$scope.sort = '"Date" DESC'
-	$scope.keyword = ''
-	$scope.limit = 10
-    $scope.page = 1
-    $scope.offset = 0
+  	$scope.limits = [
+  	{option: 10, display: "10 items per page"},
+  	{option: 25, display: "25 items per page"},
+  	{option: 50, display: "50 items per page"},
+  	{option: 100, display: "100 items per page"}
+  	]
 
     var timeout;
 
@@ -96,8 +104,6 @@ slControllers.controller('PermitSearchCtrl', ['$scope', '$timeout','CKAN',
     })
 
 	$scope.$watch('page', function(newval, oldval){
-		if ($scope.page === 1) {$scope.showprev = false} else {$scope.showprev = true}
-		if ($scope.page === $scope.totalpages) {$scope.shownext = false} else {$scope.shownext = true}
 		$scope.offset = ($scope.page - 1) * $scope.limit
 		CKAN.query(bi_resource, $scope.keyword, $scope.sort, $scope.limit, $scope.offset).success(function(data) {
 			 $scope.rows = data.result.records
@@ -114,7 +120,14 @@ slControllers.controller('PermitSearchCtrl', ['$scope', '$timeout','CKAN',
 /* Code Cases Search */
 slControllers.controller('CodeSearchCtrl', ['$scope', '$timeout', 'CKAN',
   function ($scope, $timeout, CKAN) {
-	 
+	$scope.showprev = true
+	$scope.shownext = true
+	$scope.sort = '"StatusDate" DESC'
+	$scope.keyword = ''
+	$scope.limit = 10
+    $scope.page = 1
+    $scope.offset = 0
+
   	$scope.fields = [
   	{field: 'DateOpened', display: "Date Opened", sortlow: "Oldest", sorthigh: "Newest" },
   	{field: 'Address', display: "Address", sortlow: "A", sorthigh: "Z" },
@@ -122,7 +135,14 @@ slControllers.controller('CodeSearchCtrl', ['$scope', '$timeout', 'CKAN',
   	{field: 'Status', display: "Status", sortlow: "Low", sorthigh: "High" },
   	{field: 'StatusDate', display: "Status Date", sortlow: "Oldest", sorthigh: "Newest" }]
 
-	$scope.sort = '"StatusDate" DESC'
+  	$scope.limits = [
+  	{option: 10, display: "10 items per page"},
+  	{option: 25, display: "25 items per page"},
+  	{option: 50, display: "50 items per page"},
+  	{option: 100, display: "100 items per page"}
+  	]
+
+    $scope.sort = '"StatusDate" DESC'
 	$scope.keyword = ''
 	$scope.limit = 10
     $scope.page = 1
@@ -147,8 +167,6 @@ slControllers.controller('CodeSearchCtrl', ['$scope', '$timeout', 'CKAN',
     })
 
 	$scope.$watch('page', function(newval, oldval){
-		if ($scope.page === 1) {$scope.showprev = false} else {$scope.showprev = true}
-		if ($scope.page === $scope.totalpages) {$scope.shownext = false} else {$scope.shownext = true}
 		$scope.offset = ($scope.page - 1) * $scope.limit
 		CKAN.query(ce_resource, $scope.keyword, $scope.sort, $scope.limit, $scope.offset).success(function(data) {
 			 $scope.rows = data.result.records
@@ -159,7 +177,6 @@ slControllers.controller('CodeSearchCtrl', ['$scope', '$timeout', 'CKAN',
 	$scope.previous = function() {$scope.page = $scope.page - 1}
 	$scope.first = function() {$scope.page = 1}
     $scope.last = function() {$scope.page = $scope.totalpages}
-
 }]);
 
 /* ROW Permit Search */
