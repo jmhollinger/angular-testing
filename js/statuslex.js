@@ -2,7 +2,10 @@
 
 
 /* Main StatusLex App Module */
-var statuslex = angular.module('statuslex', [ 'ngRoute', 'slControllers', 'slServices', 'uiGmapgoogle-maps']);
+var statuslex = angular.module('statuslex', [ 'ngRoute', 'ngSanitize', 'slDirectives', 'slControllers', 'slServices', 'uiGmapgoogle-maps', 'ngCsv']);
+
+/* Directives Module */
+var slDirectives = angular.module('slDirectives', []);
 
 /* Controllers Module */
 var slControllers = angular.module('slControllers', []);
@@ -16,7 +19,7 @@ var slServices = angular.module('slServices', []);
 statuslex.config(['$routeProvider',
   function($routeProvider) {
     $routeProvider.
-    /* Bulding Permit Record */
+     /* Bulding Permit Record */
       when('/bldg-permits/:param', {
         templateUrl: 'templates/bi-record.html',
         controller: 'PermitDetailCtrl'
@@ -46,6 +49,10 @@ statuslex.config(['$routeProvider',
         templateUrl: 'templates/row-search.html',
         controller: 'ROWSearchCtrl'
       }).
+      /* About */
+      when('/about', {
+        templateUrl: 'templates/about.html'
+      }).
       /* Everything Else to Home Page */
       otherwise({
         templateUrl: 'templates/home.html'
@@ -59,13 +66,11 @@ var ce_resource = 'ad346da7-ce88-4c77-a0e1-10ff09bb0622'
 var row_resource = 'f64d48f2-3d01-499e-b182-7793eb7bff7c'
 
 /* Bulding Permit Search */
-slControllers.controller('PermitSearchCtrl', ['$scope', '$timeout','CKAN',
-  function ($scope, $timeout, CKAN) {
-  	$scope.showprev = true
-	$scope.shownext = true
-  	$scope.sort = '"Date" DESC'
-	$scope.keyword = ''
-	$scope.limit = 10
+slControllers.controller('PermitSearchCtrl', ['$scope', '$timeout','CKAN', 'pagination',
+  function ($scope, $timeout, CKAN, pagination) {
+    $scope.sort = '"Date" DESC'
+	  $scope.keyword = ''
+	  $scope.limit = 10
     $scope.page = 1
     $scope.offset = 0
 
@@ -87,44 +92,46 @@ slControllers.controller('PermitSearchCtrl', ['$scope', '$timeout','CKAN',
 
     var timeout;
 
-	$scope.$watchGroup(['keyword', 'sort', 'limit'], function(newvals, oldvals) {
-      if (newvals) {
-        if (timeout) $timeout.cancel(timeout);
-        timeout = $timeout(function() {
-          CKAN.query(bi_resource, $scope.keyword, $scope.sort, $scope.limit, $scope.offset).success(function(data) {
-			 $scope.rows = data.result.records
-			 $scope.page = 1
-		  })
-		  CKAN.count(bi_resource, $scope.keyword).success(function(data) {
-		  	 $scope.RecordCount = data.result.records[0].count;
-		 	 $scope.totalpages = Math.ceil($scope.RecordCount / $scope.limit)
-		  })	 
-        }, 350);
-      }
+  	$scope.$watchGroup(['keyword', 'sort', 'limit'], function(newvals, oldvals) {
+        if (newvals) {
+          if (timeout) $timeout.cancel(timeout);
+          timeout = $timeout(function() {
+        CKAN.query(bi_resource, $scope.keyword, $scope.sort, $scope.limit, $scope.offset).success(function(data) {
+  			 $scope.rows = data.result.records
+  			 $scope.page = 1
+  		  })
+  		  CKAN.count(bi_resource, $scope.keyword).success(function(data) {
+  		  	 $scope.RecordCount = data.result.records[0].count;
+  		 	   $scope.totalpages = Math.ceil($scope.RecordCount / $scope.limit)
+  		  })	 
+          }, 350);
+        }
+      })
+
+  	$scope.$watchGroup(['page','totalpages'], function(newvals, oldvals){
+  		$scope.offset = ($scope.page - 1) * $scope.limit
+  		CKAN.query(bi_resource, $scope.keyword, $scope.sort, $scope.limit, $scope.offset).success(function(data) {
+         $scope.rows = data.result.records
+         $scope.disablefirst = pagination.controls($scope.page, $scope.totalpages)[0]
+         $scope.disableprev = pagination.controls($scope.page, $scope.totalpages)[1]
+         $scope.disablenext = pagination.controls($scope.page, $scope.totalpages)[2]
+         $scope.disablelast = pagination.controls($scope.page, $scope.totalpages)[3]
+        })
     })
 
-	$scope.$watch('page', function(newval, oldval){
-		$scope.offset = ($scope.page - 1) * $scope.limit
-		CKAN.query(bi_resource, $scope.keyword, $scope.sort, $scope.limit, $scope.offset).success(function(data) {
-			 $scope.rows = data.result.records
-			})
-	})
+      $scope.first = function() {if ($scope.disablefirst) {} else {$scope.page = 1; window.scrollTo(0, 0)}}
+      $scope.previous = function() {if ($scope.disableprev) {} else {$scope.page = $scope.page - 1; window.scrollTo(0, 0)}}
+      $scope.next = function() {if ($scope.disablenext) {} else {$scope.page = $scope.page + 1; window.scrollTo(0, 0)}}
+      $scope.last = function() {if ($scope.disablelast) {} else {$scope.page = $scope.totalpages; window.scrollTo(0, 0)}}
 
-    $scope.next = function() {$scope.page = $scope.page + 1}
-	$scope.previous = function() {$scope.page = $scope.page - 1}
-	$scope.first = function() {$scope.page = 1}
-    $scope.last = function() {$scope.page = $scope.totalpages}
-
-}]);
+  }]);
 
 /* Code Cases Search */
-slControllers.controller('CodeSearchCtrl', ['$scope', '$timeout', 'CKAN',
-  function ($scope, $timeout, CKAN) {
-	$scope.showprev = true
-	$scope.shownext = true
-	$scope.sort = '"StatusDate" DESC'
-	$scope.keyword = ''
-	$scope.limit = 10
+slControllers.controller('CodeSearchCtrl', ['$scope', '$timeout', 'CKAN', 'pagination',
+  function ($scope, $timeout, CKAN, pagination) {
+  	$scope.sort = '"StatusDate" DESC'
+  	$scope.keyword = ''
+  	$scope.limit = 10
     $scope.page = 1
     $scope.offset = 0
 
@@ -141,43 +148,41 @@ slControllers.controller('CodeSearchCtrl', ['$scope', '$timeout', 'CKAN',
   	{option: 50, display: "50 items per page"},
   	{option: 100, display: "100 items per page"}
   	]
-
-    $scope.sort = '"StatusDate" DESC'
-	$scope.keyword = ''
-	$scope.limit = 10
-    $scope.page = 1
-    $scope.offset = 0
     
     var timeout;
 
-	$scope.$watchGroup(['keyword', 'sort', 'limit'], function(newvals, oldvals) {
-      if (newvals) {
-        if (timeout) $timeout.cancel(timeout);
-        timeout = $timeout(function() {
-          CKAN.query(ce_resource, $scope.keyword, $scope.sort, $scope.limit, $scope.offset).success(function(data) {
-			 $scope.rows = data.result.records
-			 $scope.page = 1
-		  })
-		  CKAN.count(ce_resource, $scope.keyword).success(function(data) {
-		  	 $scope.RecordCount = data.result.records[0].count;
-		 	 $scope.totalpages = Math.ceil($scope.RecordCount / $scope.limit)
-		  })	 
-        }, 350);
-      }
-    })
+  	$scope.$watchGroup(['keyword', 'sort', 'limit'], function(newvals, oldvals) {
+        if (newvals) {
+          if (timeout) $timeout.cancel(timeout);
+          timeout = $timeout(function() {
+            CKAN.query(ce_resource, $scope.keyword, $scope.sort, $scope.limit, $scope.offset).success(function(data) {
+  			 $scope.rows = data.result.records
+  			 $scope.page = 1
+  		  })
+  		  CKAN.count(ce_resource, $scope.keyword).success(function(data) {
+  		   $scope.RecordCount = data.result.records[0].count;
+  		 	 $scope.totalpages = Math.ceil($scope.RecordCount / $scope.limit)
+  		  })	 
+          }, 350);
+        }
+      })
 
-	$scope.$watch('page', function(newval, oldval){
-		$scope.offset = ($scope.page - 1) * $scope.limit
-		CKAN.query(ce_resource, $scope.keyword, $scope.sort, $scope.limit, $scope.offset).success(function(data) {
-			 $scope.rows = data.result.records
-			})
-	})
+  	$scope.$watchGroup(['page','totalpages'], function(newvals, oldvals){
+  		$scope.offset = ($scope.page - 1) * $scope.limit
+  		CKAN.query(ce_resource, $scope.keyword, $scope.sort, $scope.limit, $scope.offset).success(function(data) {
+  			 $scope.rows = data.result.records
+         $scope.disablefirst = pagination.controls($scope.page, $scope.totalpages)[0]
+         $scope.disableprev = pagination.controls($scope.page, $scope.totalpages)[1]
+         $scope.disablenext = pagination.controls($scope.page, $scope.totalpages)[2]
+         $scope.disablelast = pagination.controls($scope.page, $scope.totalpages)[3]
+  			})
+  	})
 
-    $scope.next = function() {$scope.page = $scope.page + 1}
-	$scope.previous = function() {$scope.page = $scope.page - 1}
-	$scope.first = function() {$scope.page = 1}
-    $scope.last = function() {$scope.page = $scope.totalpages}
-}]);
+      $scope.first = function() {if ($scope.disablefirst) {} else {$scope.page = 1; window.scrollTo(0, 0)}}
+      $scope.previous = function() {if ($scope.disableprev) {} else {$scope.page = $scope.page - 1; window.scrollTo(0, 0)}}
+      $scope.next = function() {if ($scope.disablenext) {} else {$scope.page = $scope.page + 1; window.scrollTo(0, 0)}}
+      $scope.last = function() {if ($scope.disablelast) {} else {$scope.page = $scope.totalpages; window.scrollTo(0, 0)}}
+  }]);
 
 /* ROW Permit Search */
 slControllers.controller('ROWSearchCtrl', ['$scope', '$http',
@@ -252,6 +257,22 @@ slControllers.controller('ROWDetailCtrl', ['$scope', '$http', '$routeParams',
     $scope.Contact = 'If you have questions or concerns about right-of-way permits, please contact the the Division of Engineering, Right-of-Way Section at (859) 425-2255.'
 }]);
 
+/*--------------Directives--------------*/
+
+slDirectives.directive('paginate', function () {
+    return {
+        restrict: 'A',
+        template:
+          '<p class="text-center">Page {{page | number}} of {{totalpages | number}}</p>' +
+          '<ul class="pagination">' +
+            '<li ng-class="{\'disabled\': disablefirst}" class="pointer" ng-click=\'first()\'><a>First</a></li>' +
+            '<li ng-class="{\'disabled\': disableprev}" class="pointer" ng-click=\'previous()\'><a>Previous</a></li>' +
+            '<li ng-class="{\'disabled\': disablenext}" class="pointer" ng-click=\'next()\'><a>Next</a></li>' +
+            '<li ng-class="{\'disabled\': disablelast}" class="pointer" ng-click=\'last()\'><a>Last</a></li>' +
+          '</ul>'
+    };
+});
+
 /*--------------Filters--------------*/
 
 /* titlecase filter */
@@ -271,10 +292,9 @@ statuslex.filter('titlecase', function () {
 
 /*--------------Services--------------*/
 
-/* Gets Data from CKAN */
+/* Gets Data from CKAN, query returns search results, record return an individual record, and count counts the records in the result*/
 slServices.factory('CKAN', ['$http','searchbox', function($http, searchbox){
 	return {
-		
 		query: function(dataset, terms, sort, limit, offset){
 		if (terms != ''){
 			var fulltext = ' WHERE "_full_text" @@ to_tsquery(\'' + searchbox.input(terms) + '\') '}
@@ -309,3 +329,23 @@ slServices.factory('searchbox', [function(){
 	return wordarray.toString().replace(/,+/gim,",").replace(/,$/gim,"").replace(/,/gim,"%26")}	
 }
 }])
+
+/* Disabled pagination button, returns an arrary of boolean values in the order of [first, prev, next, last] */
+slServices.factory('pagination', [function(){
+  return {
+  controls: function(page, totalpages){
+        if (totalpages === 1 && page === 1){
+        var result = [true, true, true, true]
+        }
+        else if (totalpages > 1 && page === 1){
+        var result = [true, true, false, false] 
+        }
+        else if (totalpages > 1  && page === totalpages){
+        var result = [false, false, true, true] 
+        }
+        else {
+        var result = [false, false, false, false] 
+        }
+      return result
+  }    
+}}])

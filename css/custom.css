@@ -53,8 +53,8 @@ font-weight: bold;
       line-height: 1.4em;
 }
 
-.tiles {
-  color: #ffffff;
+/*
+#tiles {
   font-size: 2em;
   text-align: center;
   background-color: #3498DB;
@@ -63,19 +63,24 @@ font-weight: bold;
   border-radius: 25px;
 }
 
-.tiles i{
+#tiles > i{
   font-size: 4em;
 }
 
-.tiles a:link, a:visited{
+#tiles > a:link, a:visited{
   color: #ffffff;
   text-decoration: none;
 }
 
-.tiles a:hover, a:focus{
+#tiles > a:hover, a:focus{
   color: #2C3E50;
   text-decoration: none;
 }
+*/
+.btn-download{
+  margin: 2em;
+}
+
 
 .angular-google-map-container {
   width: 100%;
@@ -111,7 +116,7 @@ font-weight: bold;
 .navbar-statuslex .navbar-nav > li > a:hover,
 .navbar-statuslex .navbar-nav > li > a:focus {
   color: #3498DB;
-  background-color: transparent;
+  background-color: #2C3E50;
 }
 .navbar-statuslex .navbar-nav > .active > a,
 .navbar-statuslex .navbar-nav > .active > a:hover,
@@ -139,44 +144,44 @@ font-weight: bold;
 }
 .navbar-statuslex .navbar-collapse,
 .navbar-statuslex .navbar-form {
-  border-color: #e7e7e7;
+  border-color: #2C3E50;
 }
 .navbar-statuslex .navbar-nav > .open > a,
 .navbar-statuslex .navbar-nav > .open > a:hover,
 .navbar-statuslex .navbar-nav > .open > a:focus {
-  color: #555;
-  background-color: #e7e7e7;
+  color: #3498DB;
+  background-color: #2C3E50;
 }
 @media (max-width: 767px) {
   .navbar-statuslex .navbar-nav .open .dropdown-menu > li > a {
-    color: #777;
+    color: #FFF;
   }
   .navbar-statuslex .navbar-nav .open .dropdown-menu > li > a:hover,
   .navbar-statuslex .navbar-nav .open .dropdown-menu > li > a:focus {
-    color: #333;
-    background-color: transparent;
+    color: #3498DB;
+    background-color: #2C3E50;
   }
   .navbar-statuslex .navbar-nav .open .dropdown-menu > .active > a,
   .navbar-statuslex .navbar-nav .open .dropdown-menu > .active > a:hover,
   .navbar-statuslex .navbar-nav .open .dropdown-menu > .active > a:focus {
-    color: #555;
-    background-color: #e7e7e7;
+    color: #3498DB;
+    background-color: #2C3E50;
   }
   .navbar-statuslex .navbar-nav .open .dropdown-menu > .disabled > a,
   .navbar-statuslex .navbar-nav .open .dropdown-menu > .disabled > a:hover,
   .navbar-statuslex .navbar-nav .open .dropdown-menu > .disabled > a:focus {
-    color: #ccc;
-    background-color: transparent;
+    color: #3498DB;
+    background-color: #2C3E50;
   }
 }
 .navbar-statuslex .navbar-link {
-  color: #777;
+  color: #fff;
 }
 .navbar-statuslex .navbar-link:hover {
-  color: #333;
+  color: #FFF;
 }
 .navbar-statuslex .btn-link {
-  color: #777;
+  color: #fff;
 }
 .navbar-statuslex .btn-link:hover,
 .navbar-statuslex .btn-link:focus {

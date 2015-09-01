@@ -41,18 +41,11 @@
           <strong>{{x.CleanAddress | titlecase}}</strong><br/>
           Issued on {{x.Date | date:'shortDate'}}<br/>
           {{x.PermitType | titlecase}}<br/>
-          Construction Cost: {{x.ConstructionCost | currency}}
+          {{x.ConstructionCost | currency}}
           </a>
- </div>
 </div>
-    
-<div class="text-center">
-  <ul class="pagination">
-      <li class="pointer" ng-click='first()'><a>First</a></li>
-      <li class="pointer" ng-show="showprev" ng-click='previous()'><a>Previous</a></li>
-      <li class="pointer" ng-show="shownext" ng-click='next()'><a>Next</a></li>
-      <li class="pointer" ng-click='last()'><a>Last</a></li>
-  </ul>
 </div>
-
-<p class="text-center">Page {{page}} of {{totalpages | number}} ({{ (limit * page) - (limit - 1) | number}} - {{limit * page | number}} of {{RecordCount | number}} total items.)</p>
+ <div class="text-center">   
+  <div paginate></div>
+  <button class="btn btn-default btn-download"  ng-csv="rows" filename="StatusLex.csv">Download this Data</button>
+ <div>
