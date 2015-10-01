@@ -1,6 +1,5 @@
 /*--------------Modules--------------*/
 
-
 /* Main StatusLex App Module */
 var statuslex = angular.module('statuslex', [ 'ngRoute', 'ngSanitize', 'slDirectives', 'slControllers', 'slServices', 'uiGmapgoogle-maps', 'ngCsv']);
 
@@ -15,7 +14,6 @@ var slServices = angular.module('slServices', []);
 
 /*--------------Routing--------------*/
 
-
 statuslex.config(['$routeProvider',
   function($routeProvider) {
     $routeProvider.
@@ -23,6 +21,11 @@ statuslex.config(['$routeProvider',
       when('/bldg-permits/:param', {
         templateUrl: 'templates/bi-record.html',
         controller: 'PermitDetailCtrl'
+      }).
+      /* Test Search */
+      when('/test-search/:keyword/:sortfield/:sortdir/:limit/:page', {
+        templateUrl: 'templates/test-search.html',
+        controller: 'TestSearchCtrl'
       }).
       /* Bulding Permit Search */
       when('/bldg-permits-search', {
@@ -64,6 +67,49 @@ statuslex.config(['$routeProvider',
 var bi_resource = '2691aff1-e555-48d3-9188-aebf1fa8323e'
 var ce_resource = 'ad346da7-ce88-4c77-a0e1-10ff09bb0622'
 var row_resource = 'f64d48f2-3d01-499e-b182-7793eb7bff7c'
+
+/* Test Search */
+slControllers.controller('TestSearchCtrl', ['$scope', '$routeParams', '$location', '$timeout','CKAN', 'search', 'pagination',
+  function ($scope, $routeParams, $location, $timeout, CKAN, search, pagination) {
+	$scope.sort = $routeParams.sortfield + ' ' + $routeParams.sortdir
+	$scope.sortfield = $routeParams.sortfield
+	$scope.sortdir =  $routeParams.sortdir
+	$scope.keyword = search.checknull($routeParams.keyword)
+	$scope.limit = $routeParams.limit
+    $scope.page = $routeParams.page
+
+    $scope.fields = [
+  	{field: 'Date', display: "Date", sortlow: "Oldest", sorthigh: "Newest" },
+  	{field: 'Address', display: "Address", sortlow: "A", sorthigh: "Z" },
+  	{field: 'PermitType', display: "Permit Type", sortlow: "A", sorthigh: "Z" },
+  	{field: 'ConstructionCost', display: "Construction Cost", sortlow: "Low", sorthigh: "High" },
+  	{field: 'OwnerName', display: "Owner", sortlow: "A", sorthigh: "Z" },
+  	{field: 'Contractor', display: "Contractor", sortlow: "A", sorthigh: "Z" }
+  	]
+
+  	$scope.go = function(){search.go('test-search', $scope.keyword, $scope.sort.split(" ")[0], $scope.sort.split(" ")[1], $scope.limit, 1)}
+
+  	$scope.first = function(){search.go('test-search', $scope.keyword, $scope.sort.split(" ")[0], $scope.sort.split(" ")[1], $scope.limit, 1)}
+  	
+  	$scope.prev = function(){search.go('test-search', $scope.keyword, $scope.sort.split(" ")[0], $scope.sort.split(" ")[1], $scope.limit, parseInt($routeParams.page) - 1)}
+  	
+  	$scope.next = function(){search.go('test-search', $scope.keyword, $scope.sort.split(" ")[0], $scope.sort.split(" ")[1], $scope.limit, parseInt($routeParams.page) + 1)}
+  	
+  	$scope.last = function(){search.go('test-search', $scope.keyword, $scope.sort.split(" ")[0], $scope.sort.split(" ")[1], $scope.limit, $scope.totalpages)}
+
+  	CKAN.query2(bi_resource, $routeParams.keyword, $routeParams.sortfield, $routeParams.sortdir, $routeParams.limit, ($routeParams.page - 1) * $routeParams.limit).success(function(data) {
+  			 $scope.rows = data.result.records
+  	})
+  	
+  	CKAN.count2(bi_resource, $routeParams.keyword).success(function(data) {
+  		  	$scope.RecordCount = data.result.records[0].count;
+  		  	$scope.totalpages = Math.ceil($scope.RecordCount / $routeParams.limit)
+  		  	$scope.disablefirst = pagination.controls(parseInt($routeParams.page), $scope.totalpages)[0]
+         	$scope.disableprev = pagination.controls(parseInt($routeParams.page), $scope.totalpages)[1]
+         	$scope.disablenext = pagination.controls(parseInt($routeParams.page), $scope.totalpages)[2]
+         	$scope.disablelast = pagination.controls(parseInt($routeParams.page), $scope.totalpages)[3]
+  	})
+  }]);
 
 /* Bulding Permit Search */
 slControllers.controller('PermitSearchCtrl', ['$scope', '$timeout','CKAN', 'pagination',
@@ -112,10 +158,10 @@ slControllers.controller('PermitSearchCtrl', ['$scope', '$timeout','CKAN', 'pagi
   		$scope.offset = ($scope.page - 1) * $scope.limit
   		CKAN.query(bi_resource, $scope.keyword, $scope.sort, $scope.limit, $scope.offset).success(function(data) {
          $scope.rows = data.result.records
-         $scope.disablefirst = pagination.controls($scope.page, $scope.totalpages)[0]
-         $scope.disableprev = pagination.controls($scope.page, $scope.totalpages)[1]
-         $scope.disablenext = pagination.controls($scope.page, $scope.totalpages)[2]
-         $scope.disablelast = pagination.controls($scope.page, $scope.totalpages)[3]
+         	 $scope.disablefirst = pagination.controls($scope.page, $scope.totalpages)[0]
+         	 $scope.disableprev = pagination.controls($scope.page, $scope.totalpages)[1]
+         	 $scope.disablenext = pagination.controls($scope.page, $scope.totalpages)[2]
+         	 $scope.disablelast = pagination.controls($scope.page, $scope.totalpages)[3]
         })
     })
 
@@ -171,10 +217,10 @@ slControllers.controller('CodeSearchCtrl', ['$scope', '$timeout', 'CKAN', 'pagin
   		$scope.offset = ($scope.page - 1) * $scope.limit
   		CKAN.query(ce_resource, $scope.keyword, $scope.sort, $scope.limit, $scope.offset).success(function(data) {
   			 $scope.rows = data.result.records
-         $scope.disablefirst = pagination.controls($scope.page, $scope.totalpages)[0]
-         $scope.disableprev = pagination.controls($scope.page, $scope.totalpages)[1]
-         $scope.disablenext = pagination.controls($scope.page, $scope.totalpages)[2]
-         $scope.disablelast = pagination.controls($scope.page, $scope.totalpages)[3]
+         	 $scope.disablefirst = pagination.controls($scope.page, $scope.totalpages)[0]
+         	 $scope.disableprev = pagination.controls($scope.page, $scope.totalpages)[1]
+         	 $scope.disablenext = pagination.controls($scope.page, $scope.totalpages)[2]
+         	 $scope.disablelast = pagination.controls($scope.page, $scope.totalpages)[3]
   			})
   	})
 
@@ -264,9 +310,10 @@ slDirectives.directive('paginate', function () {
         restrict: 'A',
         template:
           '<p class="text-center">Page {{page | number}} of {{totalpages | number}}</p>' +
+          '<p class="text-center">Your search returned {{RecordCount | number}} records.</p>' +
           '<ul class="pagination">' +
             '<li ng-class="{\'disabled\': disablefirst}" class="pointer" ng-click=\'first()\'><a>First</a></li>' +
-            '<li ng-class="{\'disabled\': disableprev}" class="pointer" ng-click=\'previous()\'><a>Previous</a></li>' +
+            '<li ng-class="{\'disabled\': disableprev}" class="pointer" ng-click=\'prev()\'><a>Previous</a></li>' +
             '<li ng-class="{\'disabled\': disablenext}" class="pointer" ng-click=\'next()\'><a>Next</a></li>' +
             '<li ng-class="{\'disabled\': disablelast}" class="pointer" ng-click=\'last()\'><a>Last</a></li>' +
           '</ul>'
@@ -293,14 +340,22 @@ statuslex.filter('titlecase', function () {
 /*--------------Services--------------*/
 
 /* Gets Data from CKAN, query returns search results, record return an individual record, and count counts the records in the result*/
-slServices.factory('CKAN', ['$http','searchbox', function($http, searchbox){
+slServices.factory('CKAN', ['$http','search', function($http, search){
 	return {
 		query: function(dataset, terms, sort, limit, offset){
 		if (terms != ''){
-			var fulltext = ' WHERE "_full_text" @@ to_tsquery(\'' + searchbox.input(terms) + '\') '}
+			var fulltext = ' WHERE "_full_text" @@ to_tsquery(\'' + search.clean(terms) + '\') '}
 		else {
 			var fulltext = ''}	
 		var dataurl1 = 'http://www.civicdata.com/api/action/datastore_search_sql?sql=SELECT * FROM "' + dataset + '"' + fulltext + 'ORDER BY ' + sort +', "_id" DESC' + ' LIMIT ' + limit + ' OFFSET ' + offset
+		return $http.get(dataurl1)
+		},
+		query2: function(dataset, terms, sortfield, sortdir, limit, offset){
+		if (terms === 'null'){
+			var fulltext = ''}
+		else {
+			var fulltext = ' WHERE "_full_text" @@ to_tsquery(\'' + search.clean(terms) + '\') '}	
+		var dataurl1 = 'http://www.civicdata.com/api/action/datastore_search_sql?sql=SELECT * FROM "' + dataset + '"' + fulltext + 'ORDER BY "' + sortfield + '" ' + sortdir + ', "_id" DESC' + ' LIMIT ' + limit + ' OFFSET ' + offset
 		return $http.get(dataurl1)
 		},
 		record: function(dataset, id){
@@ -309,9 +364,17 @@ slServices.factory('CKAN', ['$http','searchbox', function($http, searchbox){
 		},
 		count: function(dataset, terms){
 		if (terms != ''){
-			var fulltext = ' WHERE "_full_text" @@ to_tsquery(\'' + searchbox.input(terms) + '\') '}
+			var fulltext = ' WHERE "_full_text" @@ to_tsquery(\'' + search.clean(terms) + '\') '}
 		else {
 			var fulltext = ''}	
+		var dataurl3 = 'http://www.civicdata.com/api/action/datastore_search_sql?sql=SELECT COUNT(*) FROM "' + dataset + '"' + fulltext
+		return $http.get(dataurl3)
+		},
+		count2: function(dataset, terms){
+		if (terms === 'null'){
+			var fulltext = ''}
+		else {
+			var fulltext = ' WHERE "_full_text" @@ to_tsquery(\'' + search.clean(terms) + '\') '}	
 		var dataurl3 = 'http://www.civicdata.com/api/action/datastore_search_sql?sql=SELECT COUNT(*) FROM "' + dataset + '"' + fulltext
 		return $http.get(dataurl3)
 		},
@@ -327,6 +390,30 @@ slServices.factory('searchbox', [function(){
 	wordarray[i] = wordarray[i].replace(/[\W]|[_]|/gim,"").toUpperCase()
 	}
 	return wordarray.toString().replace(/,+/gim,",").replace(/,$/gim,"").replace(/,/gim,"%26")}	
+}
+}])
+
+
+slServices.factory('search', ['$location', function($location){
+	return {
+		go: function (base, keyword, sortfield, sortdir, limit, page ){
+		if (keyword === ''){
+  			var link = '/' + base + '/' + 'null' + '/' + sortfield + '/' + sortdir + '/' + limit + '/' + page}
+  		else { 	
+    		var link = '/' + base + '/' + keyword + '/' + sortfield + '/' + sortdir + '/' + limit + '/' + page}
+		return $location.path(link)
+		},
+		checknull: function (input){
+  		if (input === 'null')
+  		{return ''}
+  		else {return input}
+  		},
+  		clean: function(input){
+		var wordarray = input.trim().split(/\s+/gim)  
+		for (i = 0; i < wordarray.length; i++) { 
+		wordarray[i] = wordarray[i].replace(/[\W]|[_]|/gim,"").toUpperCase()
+		}
+		return wordarray.toString().replace(/,+/gim,",").replace(/,$/gim,"").replace(/,/gim,"%26")}	
 }
 }])
 
