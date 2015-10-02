@@ -4,7 +4,7 @@
     <input ng-model="keyword" name="search" placeholder="Search" class="input-md form-control" type="search">
   </div>
   <div class="form-group col-md-4">
-    <select ng-model="sort" ng-change="go()" class="input-md form-control">
+    <select ng-model="sort" ng-change="first()" class="input-md form-control">
       <option value='Date DESC'>Date - Descending</option>
       <option value='Date ASC'>Date - Ascending</option>
       <option value='Address DESC'>Address - Descending</option>
@@ -20,7 +20,7 @@
     </select>
   </div>
   <div class="form-group col-md-2">
-    <select ng-model="limit" ng-change="go()" class="input-md form-control">
+    <select ng-model="limit" ng-change="first()" class="input-md form-control">
       <option value="10">Show 10 Records</option>
       <option value="25">Show 25 Records</option>
       <option value="50">Show 50 Records</option>
@@ -28,12 +28,11 @@
     </select>
   </div>
   <div class="form-group col-md-1">
-    <button type="submit" class="btn btn-success"ng-click="go()">Search</button>
+    <button type="submit" class="btn btn-success"ng-click="first()">Search</button>
   </div>
   </form>
 </div>
 <table class="table table-striped hidden-xs">
-
 <thead>
       <tr>
              <th ng-repeat="x in fields">{{x.display}}</th>
@@ -62,10 +61,10 @@
           </a>
 </div>
 </div>
- <div class="text-center">   
+<div class="text-center">   
  
-  <div paginate></div>
+<div paginate></div>
 
-  <button class="btn btn-default btn-download"  ng-csv="rows" filename="StatusLex.csv">Download this Data</button>
+<button class="btn btn-default btn-download"  ng-csv="rows" filename="StatusLex.csv">Download this Data</button>
  
  <div>
