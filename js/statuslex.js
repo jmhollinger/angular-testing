@@ -87,6 +87,8 @@ slControllers.controller('TestSearchCtrl', ['$scope', '$location', 'CKAN', 'sear
   	{field: 'Contractor', display: "Contractor", sortlow: "A", sorthigh: "Z" }
   	]
 
+  	$scope.exportfields = ["_id", "id","Date", "Address", "Suite", "PermitType", "ConstructionCost", "OwnerName", "Contractor", "CleanAddress", "MatchType", "parcelId", "lat", "lng"]
+
   	$scope.first = function(){$location.search({q : $scope.keyword, sort : $scope.sort.split(" ")[0], dir: $scope.sort.split(" ")[1], limit: $scope.limit, page: 1})}
   	$scope.prev = function() {if ($scope.disableprev) {} else {$location.search({q : $scope.keyword, sort : $scope.sort.split(" ")[0], dir: $scope.sort.split(" ")[1], limit: $scope.limit, page: parseInt($location.search().page) - 1})}}
 	$scope.next = function() {if ($scope.disablenext) {} else {$location.search({q : $scope.keyword, sort : $scope.sort.split(" ")[0], dir: $scope.sort.split(" ")[1], limit: $scope.limit, page: parseInt($location.search().page) + 1})}}
@@ -124,17 +126,23 @@ slControllers.controller('PermitSearchCtrl', ['$scope', '$location', 'CKAN', 'se
   	{field: 'OwnerName', display: "Owner", sortlow: "A", sorthigh: "Z" },
   	{field: 'Contractor', display: "Contractor", sortlow: "A", sorthigh: "Z" }
   	]
-
+  	
   	$scope.first = function(){$location.search({q : $scope.keyword, sort : $scope.sort.split(" ")[0], dir: $scope.sort.split(" ")[1], limit: $scope.limit, page: 1})}
   	$scope.prev = function() {if ($scope.disableprev) {} else {$location.search({q : $scope.keyword, sort : $scope.sort.split(" ")[0], dir: $scope.sort.split(" ")[1], limit: $scope.limit, page: parseInt($location.search().page) - 1})}}
 	$scope.next = function() {if ($scope.disablenext) {} else {$location.search({q : $scope.keyword, sort : $scope.sort.split(" ")[0], dir: $scope.sort.split(" ")[1], limit: $scope.limit, page: parseInt($location.search().page) + 1})}}
   	$scope.last = function(){$location.search({q : $scope.keyword, sort : $scope.sort.split(" ")[0], dir: $scope.sort.split(" ")[1], limit: $scope.limit, page: $scope.totalpages})}
 
-  	CKAN.query2(bi_resource, $location.search().q, $location.search().sort, $location.search().dir, $location.search().limit, ($location.search().page - 1) * $location.search().limit).success(function(data) {
+  	CKAN.query(bi_resource, $location.search().q, $location.search().sort, $location.search().dir, $location.search().limit, ($location.search().page - 1) * $location.search().limit).success(function(data) {
   			 $scope.rows = data.result.records
   	})
+
+  	$scope.exportfields = ["_id", "ID","Date", "Address", "Suite", "PermitType", "ConstructionCost", "OwnerName", "Contractor", "CleanAddress", "MatchType", "MatchAddress", "parcelId", "lat", "lng"]
+
+  	CKAN.dump(bi_resource, $scope.exportfields, $location.search().q, $location.search().sort, $location.search().dir).success(function(data) {
+  			 $scope.export = JSON.parse(JSON.stringify( data.result.records, $scope.exportfields))
+  	})
   	
-  	CKAN.count2(bi_resource, $location.search().q).success(function(data) {
+  	CKAN.count(bi_resource, $location.search().q).success(function(data) {
   		  	$scope.RecordCount = data.result.records[0].count;
   		  	$scope.totalpages = Math.ceil($scope.RecordCount / $location.search().limit)
          	$scope.disablefirst = pagination.controls(parseInt($location.search().page), $scope.totalpages)[0]
@@ -166,11 +174,17 @@ slControllers.controller('CodeSearchCtrl', ['$scope', '$location', 'CKAN', 'sear
 	$scope.next = function() {if ($scope.disablenext) {} else {$location.search({q : $scope.keyword, sort : $scope.sort.split(" ")[0], dir: $scope.sort.split(" ")[1], limit: $scope.limit, page: parseInt($location.search().page) + 1})}}
   	$scope.last = function(){$location.search({q : $scope.keyword, sort : $scope.sort.split(" ")[0], dir: $scope.sort.split(" ")[1], limit: $scope.limit, page: $scope.totalpages})}
 
-  	CKAN.query2(ce_resource, $location.search().q, $location.search().sort, $location.search().dir, $location.search().limit, ($location.search().page - 1) * $location.search().limit).success(function(data) {
+  	CKAN.query(ce_resource, $location.search().q, $location.search().sort, $location.search().dir, $location.search().limit, ($location.search().page - 1) * $location.search().limit).success(function(data) {
   			 $scope.rows = data.result.records
   	})
+
+  	$scope.exportfields = ["_id", "CaseNo", "DateOpened", "Address", "CaseType", "Closed", "Status", "StatusDate", "CleanAddress", "MatchType", "MatchAddress","parcelId", "lat", "lng"]
+
+  	CKAN.dump(ce_resource, $scope.exportfields, $location.search().q, $location.search().sort, $location.search().dir).success(function(data) {
+  			 $scope.export = JSON.parse(JSON.stringify( data.result.records, $scope.exportfields))
+  	})
   	
-  	CKAN.count2(ce_resource, $location.search().q).success(function(data) {
+  	CKAN.count(ce_resource, $location.search().q).success(function(data) {
   		  	$scope.RecordCount = data.result.records[0].count;
   		  	$scope.totalpages = Math.ceil($scope.RecordCount / $location.search().limit)
          	$scope.disablefirst = pagination.controls(parseInt($location.search().page), $scope.totalpages)[0]
@@ -292,40 +306,39 @@ statuslex.filter('titlecase', function () {
 /* Gets Data from CKAN, query returns search results, record return an individual record, and count counts the records in the result*/
 slServices.factory('CKAN', ['$http','search', function($http, search){
 	return {
-		query: function(dataset, terms, sort, limit, offset){
-		if (terms != ''){
-			var fulltext = ' WHERE "_full_text" @@ to_tsquery(\'' + search.clean(terms) + '\') '}
-		else {
-			var fulltext = ''}	
-		var dataurl1 = 'http://www.civicdata.com/api/action/datastore_search_sql?sql=SELECT * FROM "' + dataset + '"' + fulltext + 'ORDER BY ' + sort +', "_id" DESC' + ' LIMIT ' + limit + ' OFFSET ' + offset
-		return $http.get(dataurl1)
-		},
-		query2: function(dataset, terms, sortfield, sortdir, limit, offset){
+		query: function(dataset, terms, sortfield, sortdir, limit, offset){
 		if (!terms){
 			var fulltext = ''}
 		else {
 			var fulltext = ' WHERE "_full_text" @@ to_tsquery(\'' + search.clean(terms) + '\') '}	
-		var dataurl1 = 'http://www.civicdata.com/api/action/datastore_search_sql?sql=SELECT * FROM "' + dataset + '"' + fulltext + 'ORDER BY "' + sortfield + '" ' + sortdir + ', "_id" DESC' + ' LIMIT ' + limit + ' OFFSET ' + offset
+			var dataurl1 = 'http://www.civicdata.com/api/action/datastore_search_sql?sql=SELECT * FROM "' + dataset + '"' + fulltext + 'ORDER BY "' + sortfield + '" ' + sortdir + ', "_id" DESC' + ' LIMIT ' + limit + ' OFFSET ' + offset
+		return $http.get(dataurl1)
+		},
+		dump: function(dataset, fields, terms, sortfield, sortdir){
+		var f = ''
+		var l = fields.length - 1  
+		for (i = 0; i < l; i++) { 
+		    f += '"' + fields[i] + '", '}
+	 
+	 	var f2 = f + '"' + fields[l] + '"'
+		
+		if (!terms){
+			var fulltext = ''}
+		else {
+			var fulltext = ' WHERE "_full_text" @@ to_tsquery(\'' + search.clean(terms) + '\') '}	
+			var dataurl1 = 'http://www.civicdata.com/api/action/datastore_search_sql?sql=SELECT ' + f2 + ' FROM "' + dataset + '"' + fulltext + 'ORDER BY "' + sortfield + '" ' + sortdir + ', "_id" DESC'
 		return $http.get(dataurl1)
 		},
 		record: function(dataset, id){
-		var dataurl2 = 'http://www.civicdata.com/api/action/datastore_search_sql?sql=SELECT * FROM "' + dataset + '" WHERE "_id" = ' + id
+			var dataurl2 = 'http://www.civicdata.com/api/action/datastore_search_sql?sql=SELECT * FROM "' + dataset + '" WHERE "_id" = ' + id
 		return $http.get(dataurl2)
 		},
 		count: function(dataset, terms){
-		if (terms != ''){
-			var fulltext = ' WHERE "_full_text" @@ to_tsquery(\'' + search.clean(terms) + '\') '}
-		else {
-			var fulltext = ''}	
-		var dataurl3 = 'http://www.civicdata.com/api/action/datastore_search_sql?sql=SELECT COUNT(*) FROM "' + dataset + '"' + fulltext
-		return $http.get(dataurl3)
-		},
-		count2: function(dataset, terms){
 		if (!terms){
 			var fulltext = ''}
 		else {
 			var fulltext = ' WHERE "_full_text" @@ to_tsquery(\'' + search.clean(terms) + '\') '}	
-		var dataurl3 = 'http://www.civicdata.com/api/action/datastore_search_sql?sql=SELECT COUNT(*) FROM "' + dataset + '"' + fulltext
+			var dataurl3 = 'http://www.civicdata.com/api/action/datastore_search_sql?sql=SELECT COUNT(*) FROM "' + dataset + '"' + fulltext
 		return $http.get(dataurl3)
 		},
 }
