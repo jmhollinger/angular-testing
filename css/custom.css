@@ -53,9 +53,9 @@ font-weight: bold;
       line-height: 1.4em;
 }
 
-/*
+
 #tiles {
-  font-size: 2em;
+  font-size: 5em;
   text-align: center;
   background-color: #3498DB;
   border: 15px solid #ffffff;
@@ -64,7 +64,7 @@ font-weight: bold;
 }
 
 #tiles > i{
-  font-size: 4em;
+  font-size: 5em;
 }
 
 #tiles > a:link, a:visited{
@@ -76,7 +76,7 @@ font-weight: bold;
   color: #2C3E50;
   text-decoration: none;
 }
-*/
+
 .btn-download{
   margin: 2em;
 }
